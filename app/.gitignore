@@ -1,1 +1,22 @@
-/build
+# Ignore IDE configs
+.idea/
+*.iml
+*.ipr
+
+# Ignore build output
+/build/
+*/build/
+
+# Ignore local properties
+local.properties
+
+# Ignore logs and temp files
+*.log
+*.hprof
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore generated launchers (unless customized)
+*.webp
