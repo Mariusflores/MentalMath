@@ -1,22 +1,40 @@
-# Ignore IDE configs
+# === Android Studio ===
 .idea/
 *.iml
 *.ipr
+*.iws
 
-# Ignore build output
+# === Build output ===
 /build/
 */build/
 
-# Ignore local properties
+# === Gradle files ===
+.gradle/
 local.properties
+*.jar
+*.war
+*.ear
 
-# Ignore logs and temp files
+# === Log & temp files ===
 *.log
 *.hprof
+*.tmp
 
-# Ignore system files
+# === OS/system files ===
 .DS_Store
 Thumbs.db
 
-# Ignore generated launchers (unless customized)
+# === Android generated resources ===
 *.webp
+*.ap_
+*.apk
+*.dex
+
+# === Kotlin/Java ===
+*.class
+
+# === Jetpack Compose ===
+*.pb
+
+# === Misc ===
+captures/
