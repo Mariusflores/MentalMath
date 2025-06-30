@@ -74,10 +74,10 @@ fun MathProblemView( modifier: Modifier = Modifier) {
 
         Button(onClick = {
              correctAnswer = answer.toInt() == problem.correctAnswer
-            if(correctAnswer){
-                feedback = "Correct!"
+            feedback = if (correctAnswer){
+                "Correct!"
             }else{
-               feedback = "Wrong, Try again."
+                "Wrong, Try again."
             }
         })
         {
