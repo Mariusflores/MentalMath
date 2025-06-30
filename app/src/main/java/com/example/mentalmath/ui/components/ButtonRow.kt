@@ -10,9 +10,8 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ButtonRow(
-    correctAnswer: Boolean,
     onSubmitClick: () -> Unit,
-    onNextProblemClick: () -> Unit
+    onEndClick: () -> Unit
 ) {
 
     Row(
@@ -25,11 +24,10 @@ fun ButtonRow(
         {
             Text("Submit")
         }
-        if (correctAnswer) {
+
             Button(onClick = {
-                onNextProblemClick()
-            }) { Text("New problem") }
-        }
+                onEndClick()
+            }) { Text("Stop Playing") }
     }
 
 }

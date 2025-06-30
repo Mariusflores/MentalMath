@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mentalmath.logic.MathProblemGenerator
 import com.example.mentalmath.ui.components.ButtonRow
@@ -22,13 +22,21 @@ import com.example.mentalmath.ui.theme.MentalMathTheme
 @Composable
 fun QuizScreen(
     navController: NavController,
+    viewModel: QuizViewModel,
     modifier: Modifier = Modifier
+
 )
  {
-    val viewModel : QuizViewModel = viewModel()
+
+
+     LaunchedEffect(viewModel.isQuizFinished) {
+         if (viewModel.isQuizFinished) {
+             navController.navigate("score")
+         }
+     }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(24.dp)
             .fillMaxSize()
     ) {
@@ -42,9 +50,8 @@ fun QuizScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         ButtonRow(
-            viewModel.correctAnswer,
             onSubmitClick = {viewModel.onSubmitClick()},
-            onNextProblemClick = {viewModel.onNextProblemClick() })
+            onEndClick = {viewModel.onEndClick() })
 
         FeedbackDisplay(viewModel.feedback)
 

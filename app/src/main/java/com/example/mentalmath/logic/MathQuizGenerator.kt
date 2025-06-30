@@ -1,0 +1,13 @@
+package com.example.mentalmath.logic
+
+object MathQuizGenerator {
+
+    fun generateRandomOperatorQuiz(): List<MathProblem>{
+        val quiz: MutableList<MathProblem> = mutableListOf()
+        for(i in 1..10){
+            quiz.add(MathProblemGenerator.generateRandomProblem())
+        }
+
+        return quiz.toList()
+    }
+}

@@ -4,38 +4,50 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.mentalmath.logic.MathProblemGenerator
+import com.example.mentalmath.logic.MathQuizGenerator
 
 
 class QuizViewModel : ViewModel() {
 
-    var problem by  mutableStateOf(MathProblemGenerator.generateAdditionProblem())
+    var quiz = MathQuizGenerator.generateRandomOperatorQuiz()
+    private var quizIndex = 0
+    var problem by mutableStateOf( quiz[quizIndex])
+
+    var score by mutableStateOf(0)
+
+    var isQuizFinished by mutableStateOf(false)
+
     var answer by mutableStateOf("")
     var feedback by mutableStateOf("")
-    var correctAnswer by mutableStateOf(false)
 
-    fun onSubmitClick () {
+
+    fun onSubmitClick() {
         val userAnswer = answer.toIntOrNull()
         when (userAnswer) {
             null -> {
                 feedback = "Please enter a valid number."
-                correctAnswer = false
             }
             problem.correctAnswer -> {
-                feedback = "Correct!"
-                correctAnswer = true
+                score++
+                advanceQuiz()
             }
             else -> {
-                feedback = "Wrong, please try again!"
-                correctAnswer = false
+                advanceQuiz()
             }
         }
     }
-    fun onNextProblemClick() {
-        problem = MathProblemGenerator.generateAdditionProblem()
-        feedback = ""
-        correctAnswer = false
-        answer = ""
+    fun onEndClick() {
+        isQuizFinished = true
+    }
+
+    private fun advanceQuiz(){
+        if(quizIndex < quiz.size - 1){
+            quizIndex ++
+            problem =  quiz[quizIndex]
+            answer = ""
+        }else{
+            isQuizFinished = true
+        }
     }
 
 
