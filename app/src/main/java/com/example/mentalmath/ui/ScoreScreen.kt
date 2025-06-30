@@ -38,6 +38,7 @@ import androidx.navigation.NavController
             )
 
         Button(onClick = {
+            viewModel.resetQuiz()
             navController.navigate("landing")
         }) {
             Text("Take me back")

@@ -9,11 +9,12 @@ import com.example.mentalmath.logic.MathQuizGenerator
 
 class QuizViewModel : ViewModel() {
 
-    var quiz = MathQuizGenerator.generateRandomOperatorQuiz()
-    private var quizIndex = 0
+    var quiz by mutableStateOf( MathQuizGenerator.generateRandomOperatorQuiz())
+    var quizIndex = 0
     var problem by mutableStateOf( quiz[quizIndex])
 
     var score by mutableStateOf(0)
+    var lastAnswerCorrect by mutableStateOf<Boolean?>(null)
 
     var isQuizFinished by mutableStateOf(false)
 
@@ -29,12 +30,13 @@ class QuizViewModel : ViewModel() {
             }
             problem.correctAnswer -> {
                 score++
-                advanceQuiz()
+                lastAnswerCorrect = true
             }
             else -> {
-                advanceQuiz()
+                lastAnswerCorrect = false
             }
         }
+        advanceQuiz()
     }
     fun onEndClick() {
         isQuizFinished = true
@@ -48,6 +50,17 @@ class QuizViewModel : ViewModel() {
         }else{
             isQuizFinished = true
         }
+    }
+
+    fun resetQuiz(){
+        quiz = MathQuizGenerator.generateRandomOperatorQuiz()
+        quizIndex = 0
+        problem = quiz[quizIndex]
+        score = 0
+        isQuizFinished = false
+        answer = ""
+        feedback = ""
+
     }
 
 

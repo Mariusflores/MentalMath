@@ -3,11 +3,14 @@ package com.example.mentalmath.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -27,8 +30,12 @@ fun QuizScreen(
 
 )
  {
-
-
+    val progress = (viewModel.quizIndex + 1).toFloat() / viewModel.quiz.size
+     val color = when (viewModel.lastAnswerCorrect){
+         true -> Color.Green
+         false -> Color.Red
+         null -> Color.Gray
+     }
      LaunchedEffect(viewModel.isQuizFinished) {
          if (viewModel.isQuizFinished) {
              navController.navigate("score")
@@ -40,6 +47,14 @@ fun QuizScreen(
             .padding(24.dp)
             .fillMaxSize()
     ) {
+
+        LinearProgressIndicator(
+
+            progress = {progress},
+            modifier = modifier.fillMaxWidth(0.7f),
+            color = color
+        )
+
         ProblemDisplay(viewModel.problem)
 
         InputBox(
