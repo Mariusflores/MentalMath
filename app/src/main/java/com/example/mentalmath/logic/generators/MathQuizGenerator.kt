@@ -1,4 +1,6 @@
-package com.example.mentalmath.logic
+package com.example.mentalmath.logic.generators
+
+import com.example.mentalmath.logic.models.MathProblem
 
 object MathQuizGenerator {
 

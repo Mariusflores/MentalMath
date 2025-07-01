@@ -1,4 +1,4 @@
-package com.example.mentalmath.logic
+package com.example.mentalmath.logic.models
 
 data class MathProblem(
     val a: Int,

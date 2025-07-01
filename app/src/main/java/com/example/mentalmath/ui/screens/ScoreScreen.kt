@@ -1,4 +1,4 @@
-package com.example.mentalmath.ui
+package com.example.mentalmath.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,17 +13,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.mentalmath.ui.viewmodel.QuizViewModel
 
 @Composable
     fun ScoreScreen(
-        navController: NavController,
-        viewModel: QuizViewModel,
-        modifier : Modifier = Modifier
+    navController: NavController,
+    viewModel: QuizViewModel,
+    modifier : Modifier = Modifier
 
     ){
 
 
-    val scoreText = "You scored ${viewModel.score} / ${viewModel.quiz.size}"
+    val scoreText = "You scored ${viewModel.score.value} / ${viewModel.quiz.size}"
     Column(
             modifier = modifier
                 .padding(24.dp)

@@ -1,4 +1,4 @@
-package com.example.mentalmath.ui
+package com.example.mentalmath.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

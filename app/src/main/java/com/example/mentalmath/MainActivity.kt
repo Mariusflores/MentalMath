@@ -12,10 +12,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.mentalmath.ui.QuizScreen
-import com.example.mentalmath.ui.LandingScreen
-import com.example.mentalmath.ui.QuizViewModel
-import com.example.mentalmath.ui.ScoreScreen
+import com.example.mentalmath.ui.screens.QuizScreen
+import com.example.mentalmath.ui.screens.LandingScreen
+import com.example.mentalmath.ui.viewmodel.QuizViewModel
+import com.example.mentalmath.ui.screens.ScoreScreen
 import com.example.mentalmath.ui.theme.MentalMathTheme
 
 class MainActivity : ComponentActivity() {

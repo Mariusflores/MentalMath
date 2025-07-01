@@ -1,4 +1,4 @@
-package com.example.mentalmath.ui
+package com.example.mentalmath.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,12 +14,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.mentalmath.logic.MathProblemGenerator
+import com.example.mentalmath.logic.generators.MathProblemGenerator
 import com.example.mentalmath.ui.components.ButtonRow
 import com.example.mentalmath.ui.components.FeedbackDisplay
 import com.example.mentalmath.ui.components.InputBox
 import com.example.mentalmath.ui.components.ProblemDisplay
 import com.example.mentalmath.ui.theme.MentalMathTheme
+import com.example.mentalmath.ui.viewmodel.QuizViewModel
 
 
 @Composable
@@ -36,6 +37,7 @@ fun QuizScreen(
          false -> Color.Red
          null -> Color.Gray
      }
+
      LaunchedEffect(viewModel.isQuizFinished) {
          if (viewModel.isQuizFinished) {
              navController.navigate("score")
@@ -55,11 +57,11 @@ fun QuizScreen(
             color = color
         )
 
-        ProblemDisplay(viewModel.problem)
+        ProblemDisplay(viewModel.currentProblem)
 
         InputBox(
-            answer = viewModel.answer,
-            onAnswerChange= {viewModel.answer = it}
+            answer = viewModel.answer.value,
+            onAnswerChange= {viewModel.setAnswer(it)}
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -68,7 +70,7 @@ fun QuizScreen(
             onSubmitClick = {viewModel.onSubmitClick()},
             onEndClick = {viewModel.onEndClick() })
 
-        FeedbackDisplay(viewModel.feedback)
+        FeedbackDisplay(viewModel.inputError.value)
 
 
     }
