@@ -1,12 +1,19 @@
 package com.example.mentalmath.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -21,41 +28,67 @@ import com.example.mentalmath.ui.components.InputBox
 import com.example.mentalmath.ui.components.ProblemDisplay
 import com.example.mentalmath.ui.theme.MentalMathTheme
 import com.example.mentalmath.ui.viewmodel.QuizViewModel
+import kotlin.time.Duration
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizScreen(
     navController: NavController,
     viewModel: QuizViewModel,
     modifier: Modifier = Modifier
 
-)
- {
-    val progress = (viewModel.quizIndex + 1).toFloat() / (viewModel.quiz.size + 1)
-     val color = when (viewModel.lastAnswerCorrect){
-         true -> Color.Green
-         false -> Color.Red
-         null -> Color.Gray
-     }
+) {
+    fun formatTime(duration: Duration): String {
+        val totalSeconds = duration.inWholeSeconds
+        val minutes = totalSeconds / 60
+        val seconds = totalSeconds % 60
+        return "%02d:%02d".format(minutes, seconds)
+    }
 
-     LaunchedEffect(viewModel.isQuizFinished) {
-         if (viewModel.isQuizFinished) {
-             navController.navigate("score")
-         }
-     }
+    val progress = (viewModel.quizIndex + 1).toFloat() / (viewModel.quiz.size + 1)
+    val color = when (viewModel.lastAnswerCorrect) {
+        true -> Color.Green
+        false -> Color.Red
+        null -> Color.Gray
+    }
+
+
+    LaunchedEffect(viewModel.isQuizFinished) {
+        if (viewModel.isQuizFinished) {
+            navController.navigate("score")
+        }
+    }
 
     Column(
         modifier = modifier
             .padding(24.dp)
             .fillMaxSize()
     ) {
+        Row {
+            LinearProgressIndicator(
 
-        LinearProgressIndicator(
+                progress = { progress },
+                modifier = modifier.fillMaxWidth(0.7f),
+                color = color
+            )
 
-            progress = {progress},
-            modifier = modifier.fillMaxWidth(0.7f),
-            color = color
-        )
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Row (
+            ){
+                Icon(
+                    imageVector = Icons.Filled.Timer,
+                    contentDescription = "Timer"
+                )
+
+                Text(
+                    text = formatTime(viewModel.elapsedTime.value)
+                )
+            }
+
+
+        }
 
         viewModel.currentProblem?.let { problem ->
             ProblemDisplay(problem)
@@ -64,14 +97,14 @@ fun QuizScreen(
 
         InputBox(
             answer = viewModel.answer.value,
-            onAnswerChange= {viewModel.setAnswer(it)}
+            onAnswerChange = { viewModel.setAnswer(it) }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         ButtonRow(
-            onSubmitClick = {viewModel.onSubmitClick()},
-            onEndClick = {viewModel.onEndClick() })
+            onSubmitClick = { viewModel.onSubmitClick() },
+            onEndClick = { viewModel.onEndClick() })
 
         FeedbackDisplay(viewModel.inputError.value)
 

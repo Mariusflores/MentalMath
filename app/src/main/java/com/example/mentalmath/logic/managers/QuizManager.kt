@@ -4,12 +4,27 @@ import com.example.mentalmath.logic.generators.MathQuizGenerator
 import com.example.mentalmath.logic.models.Difficulty
 import com.example.mentalmath.logic.models.MathProblem
 import com.example.mentalmath.logic.models.QuizState
+import com.example.mentalmath.logic.models.ScoreCard
+import kotlin.time.Duration
 
 class QuizManager {
 
     fun checkAnswer(inputAnswer: Int, answer: Int ): Boolean{
 
         return inputAnswer == answer
+    }
+
+    fun verifyQuizFinished(quizState: QuizState): Boolean {
+        return quizState.quizFinished
+    }
+
+    fun getScoreCard(score: Int, problemCount : Int, elapsedTime: Duration): ScoreCard{
+        val percentage: Double = calculatePercentage(score, problemCount)
+        return ScoreCard(score, problemCount,percentage ,elapsedTime)
+    }
+
+    private fun calculatePercentage(score: Int, problemCount: Int): Double {
+        return  (score.toDouble() / problemCount) * 100
     }
 
     fun progressQuiz(quizIndex: Int, quizLength: Int): QuizState{
