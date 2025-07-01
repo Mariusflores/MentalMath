@@ -39,7 +39,6 @@ import com.example.mentalmath.ui.viewmodel.QuizViewModel
             )
 
         Button(onClick = {
-            viewModel.resetQuiz()
             navController.navigate("landing")
         }) {
             Text("Take me back")

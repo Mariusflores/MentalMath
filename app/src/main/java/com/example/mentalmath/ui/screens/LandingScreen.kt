@@ -3,7 +3,6 @@ package com.example.mentalmath.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -71,12 +70,13 @@ fun LandingScreen(
                 .height(60.dp),
             onClick = {
                 navController.popBackStack("landing", inclusive = false)
-                navController.navigate("quiz")
+                navController.navigate("quiz-selector")
 
             }){
             Text("Play")
         }
         Spacer(modifier = Modifier.height(16.dp))
+        /*
         Row (
             modifier = Modifier.padding(12.dp)
         ){
@@ -98,6 +98,8 @@ fun LandingScreen(
             }
 
         }
+
+         */
     }
 
 }

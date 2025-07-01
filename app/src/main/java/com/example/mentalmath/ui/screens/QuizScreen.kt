@@ -31,7 +31,7 @@ fun QuizScreen(
 
 )
  {
-    val progress = (viewModel.quizIndex + 1).toFloat() / viewModel.quiz.size
+    val progress = (viewModel.quizIndex + 1).toFloat() / (viewModel.quiz.size + 1)
      val color = when (viewModel.lastAnswerCorrect){
          true -> Color.Green
          false -> Color.Red
@@ -57,7 +57,10 @@ fun QuizScreen(
             color = color
         )
 
-        ProblemDisplay(viewModel.currentProblem)
+        viewModel.currentProblem?.let { problem ->
+            ProblemDisplay(problem)
+        }
+
 
         InputBox(
             answer = viewModel.answer.value,

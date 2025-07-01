@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mentalmath.ui.screens.QuizScreen
 import com.example.mentalmath.ui.screens.LandingScreen
+import com.example.mentalmath.ui.screens.QuizSelectorScreen
 import com.example.mentalmath.ui.viewmodel.QuizViewModel
 import com.example.mentalmath.ui.screens.ScoreScreen
 import com.example.mentalmath.ui.theme.MentalMathTheme
@@ -38,6 +39,7 @@ class MainActivity : ComponentActivity() {
                         composable("landing") { LandingScreen(navController) }
                         composable("quiz") { QuizScreen(navController, viewModel) }
                         composable("score") { ScoreScreen(navController, viewModel) }
+                        composable("quiz-selector") { QuizSelectorScreen(navController, viewModel) }
                     }
 
                 }

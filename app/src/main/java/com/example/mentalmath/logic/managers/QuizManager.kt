@@ -1,5 +1,8 @@
 package com.example.mentalmath.logic.managers
 
+import com.example.mentalmath.logic.generators.MathQuizGenerator
+import com.example.mentalmath.logic.models.Difficulty
+import com.example.mentalmath.logic.models.MathProblem
 import com.example.mentalmath.logic.models.QuizState
 
 class QuizManager {
@@ -29,5 +32,11 @@ class QuizManager {
 
     fun resetAnswer(): String{
         return ""
+    }
+
+    fun getQuizByDifficulty(difficulty: String): List<MathProblem> {
+        val quizDifficulty: Difficulty = Difficulty.EnumConverter.toEnum(difficulty.lowercase())
+
+        return MathQuizGenerator.generateRandomOperatorQuiz(quizDifficulty)
     }
 }
