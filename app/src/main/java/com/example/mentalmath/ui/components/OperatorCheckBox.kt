@@ -26,6 +26,15 @@ fun OperatorCheckBox(
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
-        Checkbox()
+        Checkbox(
+
+            TODO("Not yet implemented"),
+            onCheckedChange = TODO(),
+            modifier = TODO(),
+            enabled = TODO(),
+            colors = TODO(),
+            interactionSource = TODO()
+        )
+        
     }
 }
