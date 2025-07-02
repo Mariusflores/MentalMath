@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">MentalMath</string>
+    <string name="difficulty_label">Select Difficulty</string>
+    <string name="length_label">No. Questions</string>
+    <string name="difficulty_easy">Easy</string>
+    <string name="difficulty_medium">Medium</string>
+    <string name="difficulty_hard">Hard</string>
+    <string name="mode_5">5</string>
+    <string name="mode_10">10</string>
+    <string name="mode_15">15</string>
+    <string name="mode_20">20</string>
+
+
 </resources>

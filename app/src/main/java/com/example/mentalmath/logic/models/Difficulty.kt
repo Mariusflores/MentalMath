@@ -11,8 +11,8 @@ enum class Difficulty {
         }
     }
 
-    object EnumConverter{
-        fun toEnum(difficulty: String): Difficulty{
+    object DifficultyConverter{
+        fun toDifficulty(difficulty: String): Difficulty{
             return when(difficulty){
                 "easy" -> EASY
                 "medium" -> MEDIUM

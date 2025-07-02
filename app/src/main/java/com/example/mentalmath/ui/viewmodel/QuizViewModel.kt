@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mentalmath.logic.managers.QuizManager
 import com.example.mentalmath.logic.models.MathProblem
+import com.example.mentalmath.logic.models.QuizConfiguration
 import com.example.mentalmath.logic.models.QuizState
 import com.example.mentalmath.logic.models.ScoreCard
 import kotlinx.coroutines.delay
@@ -16,6 +17,8 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.TimeSource
 
+
+private const val INVALID_INPUT = "Please enter a valid number."
 
 class QuizViewModel : ViewModel() {
 
@@ -58,9 +61,9 @@ class QuizViewModel : ViewModel() {
     val elapsedTime: State<Duration> get() = _elapsedTime
 
 
-    fun startQuiz() {
+    fun startQuiz(quizConfiguration: QuizConfiguration) {
         startTimer()
-        _quiz.value = quizManager.getQuizByDifficulty(difficulty.value, quizLength.value)
+        _quiz.value = quizManager.getQuizByDifficulty(quizConfiguration.difficulty, quizConfiguration.operators, quizConfiguration.quizLength)
         _quizState.value = QuizState(0, false)
         _score.value = 0
         _answer.value = ""
@@ -96,7 +99,7 @@ class QuizViewModel : ViewModel() {
     fun onSubmitClick() {
         val userAnswer = answer.value.toIntOrNull()
         if (userAnswer == null) {
-            _inputError.value = "Please enter a valid number."
+            _inputError.value = INVALID_INPUT
             return
         }
         // Make sure current problem is not null

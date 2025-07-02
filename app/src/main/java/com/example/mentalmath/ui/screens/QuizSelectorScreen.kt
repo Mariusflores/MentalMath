@@ -18,23 +18,41 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.mentalmath.R
+import com.example.mentalmath.logic.models.QuizConfiguration
 import com.example.mentalmath.ui.components.DropdownTemplate
+import com.example.mentalmath.ui.components.OperatorCheckBox
 import com.example.mentalmath.ui.viewmodel.QuizViewModel
+import com.example.mentalmath.ui.viewmodel.SettingsViewModel
 
 @Composable
 fun QuizSelectorScreen(
     navController: NavController,
-    viewModel: QuizViewModel,
+    settingsViewModel: SettingsViewModel,
+    quizViewModel: QuizViewModel,
     modifier: Modifier = Modifier
 ) {
-    var selectedDifficulty by remember { mutableStateOf(viewModel.difficulty.value) }
-    val difficultyList = listOf("Easy", "Medium", "Hard")
-    val difficultyLabel = "Select Difficulty"
-    var quizLength by remember { mutableStateOf(viewModel.quizLength.value) }
-    val countList = listOf("5", "10", "15", "20")
-    val countLabel = "No. Questions"
+    var selectedDifficulty by remember { mutableStateOf(settingsViewModel.difficulty.value) }
+    var quizLength by remember { mutableStateOf(settingsViewModel.quizLength.value) }
+    val difficultyLabel = stringResource(R.string.difficulty_label)
+    val lengthLabel = stringResource(R.string.length_label)
+
+    val difficultyList = listOf(
+        stringResource(R.string.difficulty_easy),
+        stringResource(R.string.difficulty_medium),
+        stringResource(R.string.difficulty_hard),
+
+        )
+    val lengthsList = listOf(
+        stringResource(R.string.mode_5),
+        stringResource(R.string.mode_10),
+        stringResource(R.string.mode_15),
+        stringResource(R.string.mode_20)
+    )
+
 
     Column(
         modifier = modifier
@@ -54,11 +72,19 @@ fun QuizSelectorScreen(
             )
             Spacer(modifier = modifier.width(10.dp))
             DropdownTemplate(
-                quizLength, countLabel, countList,
+                quizLength, lengthLabel, lengthsList,
                 onSelected = { quizLength = it },
                 modifier = Modifier.weight(0.4f)
 
             )
+        }
+
+        Row {
+            OperatorCheckBox(
+                TODO("Not Yet Implemented"),
+                modifier = TODO()
+            )
+
         }
 
 
@@ -66,13 +92,23 @@ fun QuizSelectorScreen(
 
         Button(
             onClick = {
-                viewModel.setDifficulty(selectedDifficulty)
-                viewModel.setQuizLength(quizLength)
-                viewModel.startQuiz()
+                settingsViewModel.setDifficulty(selectedDifficulty)
+                settingsViewModel.setQuizLength(quizLength)
+                quizViewModel.startQuiz(
+                    QuizConfiguration(
+                        settingsViewModel.difficulty.value,
+                        settingsViewModel.quizLength.value,
+                        operators = TODO()
+                    )
+                )
+
                 navController.navigate("quiz")
             }
         ) {
             Text("Start Quiz")
         }
+
+
     }
 }
+

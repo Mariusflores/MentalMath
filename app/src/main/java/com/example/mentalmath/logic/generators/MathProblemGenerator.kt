@@ -27,9 +27,9 @@ object MathProblemGenerator {
         )
     }
 
-    fun generateRandomProblem(quizDifficulty: Difficulty): MathProblem {
+    fun generateRandomProblem(quizDifficulty: Difficulty, operators :Array<Operator>): MathProblem {
 
-        val operator = Operator.entries.toTypedArray().random()
+        val operator = operators.random()
         val (operand1, operand2) = generateOperands(operator, quizDifficulty)
         val questionText = generateQuestionString(operand1, operand2, operator.toSymbol())
         val answer = when (operator) {

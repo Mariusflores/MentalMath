@@ -10,6 +10,23 @@ enum class Operator {
             MUL -> "×"
             DIV -> "÷"
         }
+    }
 
+    object OperatorConverter{
+        fun toOperatorArray(operatorStringList : List<String>): Array<Operator>{
+            val operatorList = mutableListOf<Operator>()
+
+            operatorStringList.forEach{ operator ->
+
+                when(operator){
+                    "+" -> operatorList.add(ADD)
+                    "-" -> operatorList.add(SUB)
+                    "×" -> operatorList.add(MUL)
+                    "÷" -> operatorList.add(DIV)
+                }
+
+            }
+            return operatorList.toTypedArray()
+        }
     }
 }

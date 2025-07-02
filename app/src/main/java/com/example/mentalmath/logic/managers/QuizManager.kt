@@ -3,6 +3,7 @@ package com.example.mentalmath.logic.managers
 import com.example.mentalmath.logic.generators.MathQuizGenerator
 import com.example.mentalmath.logic.models.Difficulty
 import com.example.mentalmath.logic.models.MathProblem
+import com.example.mentalmath.logic.models.Operator
 import com.example.mentalmath.logic.models.QuizState
 import com.example.mentalmath.logic.models.ScoreCard
 import kotlin.time.Duration
@@ -49,10 +50,15 @@ class QuizManager {
         return ""
     }
 
-    fun getQuizByDifficulty(difficulty: String, quizLength: String): List<MathProblem> {
-        val quizDifficulty: Difficulty = Difficulty.EnumConverter.toEnum(difficulty.lowercase())
+    fun getQuizByDifficulty(
+        difficulty: String,
+        operatorsStringList: List<String>,
+        quizLength: String): List<MathProblem> {
+        val quizDifficulty: Difficulty = Difficulty.DifficultyConverter.toDifficulty(difficulty.lowercase())
+        val operatorArray = Operator.OperatorConverter.toOperatorArray(operatorsStringList)
         val length: Int = quizLength.toInt()
 
-        return MathQuizGenerator.generateRandomOperatorQuiz(quizDifficulty, length)
+        return MathQuizGenerator.generateRandomOperatorQuiz(quizDifficulty, operatorArray, length)
     }
+
 }

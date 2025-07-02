@@ -18,6 +18,7 @@ import com.example.mentalmath.ui.screens.QuizSelectorScreen
 import com.example.mentalmath.ui.viewmodel.QuizViewModel
 import com.example.mentalmath.ui.screens.ScoreScreen
 import com.example.mentalmath.ui.theme.MentalMathTheme
+import com.example.mentalmath.ui.viewmodel.SettingsViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +29,8 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val viewModel: QuizViewModel = viewModel()
+                    val quizViewModel: QuizViewModel = viewModel()
+                    val settingsViewModel: SettingsViewModel = viewModel()
                     NavHost(
                         navController,
                         startDestination = "landing",
@@ -37,9 +39,9 @@ class MainActivity : ComponentActivity() {
 
                     ) {
                         composable("landing") { LandingScreen(navController) }
-                        composable("quiz") { QuizScreen(navController, viewModel) }
-                        composable("score") { ScoreScreen(navController, viewModel) }
-                        composable("quiz-selector") { QuizSelectorScreen(navController, viewModel) }
+                        composable("quiz") { QuizScreen(navController, quizViewModel) }
+                        composable("score") { ScoreScreen(navController, quizViewModel) }
+                        composable("quiz-selector") { QuizSelectorScreen(navController, settingsViewModel, quizViewModel) }
                     }
 
                 }
