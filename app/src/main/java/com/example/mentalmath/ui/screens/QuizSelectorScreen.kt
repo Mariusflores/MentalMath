@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +40,9 @@ fun QuizSelectorScreen(
 ) {
     var selectedDifficulty by remember { mutableStateOf(settingsViewModel.difficulty.value) }
     var quizLength by remember { mutableStateOf(settingsViewModel.quizLength.value) }
+    val operatorList = settingsViewModel.operators.value
+
+
     val difficultyLabel = stringResource(R.string.difficulty_label)
     val lengthLabel = stringResource(R.string.length_label)
 
@@ -51,6 +57,12 @@ fun QuizSelectorScreen(
         stringResource(R.string.mode_10),
         stringResource(R.string.mode_15),
         stringResource(R.string.mode_20)
+    )
+    val operatorResourceList = listOf(
+        stringResource(R.string.operator_add),
+        stringResource(R.string.operator_sub),
+        stringResource(R.string.operator_mul),
+        stringResource(R.string.operator_div)
     )
 
 
@@ -79,13 +91,20 @@ fun QuizSelectorScreen(
             )
         }
 
-        Row {
-            OperatorCheckBox(
-                TODO("Not Yet Implemented"),
-                modifier = TODO()
-            )
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(4),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            items(operatorResourceList) { operator ->
+                OperatorCheckBox(
+                    symbol = operator,
+                    isChecked = operatorList.contains(operator),
+                    settingsViewModel = settingsViewModel,
 
+                    )
+            }
         }
+
 
 
         Spacer(modifier = modifier.height(16.dp))
@@ -98,7 +117,7 @@ fun QuizSelectorScreen(
                     QuizConfiguration(
                         settingsViewModel.difficulty.value,
                         settingsViewModel.quizLength.value,
-                        operators = TODO()
+                        settingsViewModel.operators.value
                     )
                 )
 

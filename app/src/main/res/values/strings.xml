@@ -9,6 +9,10 @@
     <string name="mode_10">10</string>
     <string name="mode_15">15</string>
     <string name="mode_20">20</string>
+    <string name="operator_add">+</string>
+    <string name="operator_sub">-</string>
+    <string name="operator_mul">×</string>
+    <string name="operator_div">÷</string>
 
 
 </resources>
