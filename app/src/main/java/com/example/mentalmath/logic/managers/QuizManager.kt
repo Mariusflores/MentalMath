@@ -49,9 +49,10 @@ class QuizManager {
         return ""
     }
 
-    fun getQuizByDifficulty(difficulty: String): List<MathProblem> {
+    fun getQuizByDifficulty(difficulty: String, quizLength: String): List<MathProblem> {
         val quizDifficulty: Difficulty = Difficulty.EnumConverter.toEnum(difficulty.lowercase())
+        val length: Int = quizLength.toInt()
 
-        return MathQuizGenerator.generateRandomOperatorQuiz(quizDifficulty)
+        return MathQuizGenerator.generateRandomOperatorQuiz(quizDifficulty, length)
     }
 }

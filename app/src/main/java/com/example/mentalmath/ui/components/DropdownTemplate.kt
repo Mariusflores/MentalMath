@@ -1,6 +1,5 @@
 package com.example.mentalmath.ui.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -17,40 +16,44 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DifficultyDropdown(
-    selectedDifficulty: String,
-    onDifficultySelected: (String) -> Unit
+fun DropdownTemplate(
+    value: String,
+    labelText: String,
+    items: List<String>,
+    onSelected: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    val difficulties = listOf("Easy", "Medium", "Hard")
+
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
+        onExpandedChange = { expanded = !expanded },
+        modifier = modifier
+
     ) {
         OutlinedTextField(
-            value = selectedDifficulty,
+            value = value,
             onValueChange = {},
             readOnly = true,
-            label = { Text("Select Difficulty") },
-            modifier = Modifier
+            label = { Text(labelText) },
+            modifier = modifier
                 .menuAnchor(
                     type = MenuAnchorType.PrimaryNotEditable,
                     enabled = true
 
                 )
-                .fillMaxWidth()
         )
 
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            difficulties.forEach { difficulty ->
+            items.forEach { item ->
                 DropdownMenuItem(
-                    text = { Text(difficulty) },
+                    text = { Text(item) },
                     onClick = {
-                        onDifficultySelected(difficulty)
+                        onSelected(item)
                         expanded = false
                     }
                 )

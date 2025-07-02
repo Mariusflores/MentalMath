@@ -28,7 +28,8 @@ class QuizViewModel : ViewModel() {
     private val _inputError = mutableStateOf("")
     private val _quizState = mutableStateOf(QuizState(0, false))
     private val _difficulty = mutableStateOf("Easy")
-    private val _scoreCard = mutableStateOf(ScoreCard(0, 0, 0.0,Duration.ZERO))
+    private val _quizLength = mutableStateOf("10")
+    private val _scoreCard = mutableStateOf(ScoreCard(0, 0, 0.0, Duration.ZERO))
 
     var lastAnswerCorrect by mutableStateOf<Boolean?>(null)
 
@@ -39,6 +40,7 @@ class QuizViewModel : ViewModel() {
     val answer: State<String> get() = _answer
     val inputError: State<String> get() = _inputError
     val difficulty: State<String> get() = _difficulty
+    val quizLength: State<String> get() = _quizLength
     val scoreCard: State<ScoreCard> get() = _scoreCard
 
     // No need for reactivity
@@ -58,7 +60,7 @@ class QuizViewModel : ViewModel() {
 
     fun startQuiz() {
         startTimer()
-        _quiz.value = quizManager.getQuizByDifficulty(difficulty.value)
+        _quiz.value = quizManager.getQuizByDifficulty(difficulty.value, quizLength.value)
         _quizState.value = QuizState(0, false)
         _score.value = 0
         _answer.value = ""
@@ -125,6 +127,10 @@ class QuizViewModel : ViewModel() {
 
     fun setDifficulty(selectedDifficulty: String) {
         _difficulty.value = selectedDifficulty
+    }
+
+    fun setQuizLength(questionCount: String) {
+        _quizLength.value = questionCount
     }
 
     //Setter
