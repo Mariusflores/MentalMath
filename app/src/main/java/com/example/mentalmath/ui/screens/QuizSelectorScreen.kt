@@ -22,7 +22,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mentalmath.R
 import com.example.mentalmath.logic.models.QuizConfiguration
@@ -30,6 +32,8 @@ import com.example.mentalmath.ui.components.DropdownTemplate
 import com.example.mentalmath.ui.components.OperatorCheckBox
 import com.example.mentalmath.ui.viewmodel.QuizViewModel
 import com.example.mentalmath.ui.viewmodel.SettingsViewModel
+
+private const val OPERATOR_LABEL = "Choose operators"
 
 @Composable
 fun QuizSelectorScreen(
@@ -90,9 +94,13 @@ fun QuizSelectorScreen(
 
             )
         }
-
+        Text(
+            text = OPERATOR_LABEL,
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Bold
+        )
         LazyVerticalGrid(
-            columns = GridCells.Fixed(4),
+            columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxWidth()
         ) {
             items(operatorResourceList) { operator ->
