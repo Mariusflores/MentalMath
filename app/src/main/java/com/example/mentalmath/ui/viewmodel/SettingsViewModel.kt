@@ -25,8 +25,8 @@ class SettingsViewModel : ViewModel() {
         _difficulty.value = selectedDifficulty
     }
 
-    fun setQuizLength(questionCount: String) {
-        _quizLength.value = questionCount
+    fun setQuizLength(quizLength: String) {
+        _quizLength.value = quizLength
     }
 
     fun toggleOperator(operator: String) {
