@@ -11,23 +11,8 @@ object MathProblemGenerator {
     /**
      * Generator Functions
      * */
-    fun generateAdditionProblem(): MathProblem {
 
-        val operator = Operator.ADD
-        val (a, b) = generateOperands(operator, Difficulty.EASY)
-        val questionText = generateQuestionString(a, b, operator.toSymbol())
-        val correctAnswer = (a + b)
-
-        return MathProblem(
-            a,
-            b,
-            operator,
-            questionText,
-            correctAnswer
-        )
-    }
-
-    fun generateRandomProblem(quizDifficulty: Difficulty, operators :Array<Operator>): MathProblem {
+    fun generateRandomProblem(quizDifficulty: Difficulty, operators: Array<Operator>): MathProblem {
 
         val operator = operators.random()
         val (operand1, operand2) = generateOperands(operator, quizDifficulty)
@@ -40,11 +25,7 @@ object MathProblemGenerator {
         }
 
         return MathProblem(
-            operand1,
-            operand2,
-            operator,
-            questionText,
-            answer
+            operand1, operand2, operator, questionText, answer
         )
     }
 
@@ -54,10 +35,7 @@ object MathProblemGenerator {
 
     @SuppressLint("DefaultLocale")
     private fun generateQuestionString(
-        operand1: Int,
-        operand2: Int,
-        operator: String
-    ): String {
+        operand1: Int, operand2: Int, operator: String): String {
 
         return String.format("%d %s %d", operand1, operator, operand2)
     }
@@ -119,8 +97,6 @@ object MathProblemGenerator {
                 Pair(multiplicand, multiplicator)
             }
         }
-
-
     }
 
     private fun generateSubtractionOperands(quizDifficulty: Difficulty): Pair<Int, Int> {

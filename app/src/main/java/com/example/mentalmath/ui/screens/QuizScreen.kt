@@ -112,21 +112,3 @@ fun QuizScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun QuizScreenPreview() {
-    val sampleProblem = MathProblemGenerator.generateAdditionProblem()
-    val sampleAnswer = "42"
-
-    MentalMathTheme {
-        Column(modifier = Modifier.padding(24.dp)) {
-            ProblemDisplay(sampleProblem)
-            InputBox(
-                answer = sampleAnswer,
-                onAnswerChange = {}
-            )
-        }
-    }
-}
-
-
