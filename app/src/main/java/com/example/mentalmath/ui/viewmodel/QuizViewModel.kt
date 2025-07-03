@@ -12,6 +12,11 @@ import com.example.mentalmath.logic.models.MathProblem
 import com.example.mentalmath.logic.models.QuizConfiguration
 import com.example.mentalmath.logic.models.QuizState
 import com.example.mentalmath.logic.models.ScoreCard
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
@@ -20,7 +25,9 @@ import kotlin.time.TimeSource
 
 private const val INVALID_INPUT = "Please enter a valid number."
 
-class QuizViewModel : ViewModel() {
+class QuizViewModel(
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Main
+) : ViewModel() {
 
     private val quizManager: QuizManager = QuizManager()
 
@@ -76,7 +83,7 @@ class QuizViewModel : ViewModel() {
         isTimerRunning = true
         startMark = TimeSource.Monotonic.markNow()
 
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             while (isTimerRunning) {
                 _elapsedTime.value = accumulated + startMark.elapsedNow()
                 delay(50)
