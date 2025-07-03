@@ -1,7 +1,5 @@
 package com.example.mentalmath.viewmodel
 
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mentalmath.logic.models.Difficulty
 import com.example.mentalmath.ui.viewmodel.SettingsViewModel
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
