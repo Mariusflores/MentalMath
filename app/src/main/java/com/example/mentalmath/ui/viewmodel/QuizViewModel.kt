@@ -21,6 +21,7 @@ import com.example.mentalmath.logic.models.quiz.TimerType
 import com.example.mentalmath.logic.models.quiz.QuizConfiguration
 import com.example.mentalmath.logic.models.quiz.QuizState
 import com.example.mentalmath.logic.models.quiz.ScoreCard
+import com.example.mentalmath.ui.components.ProblemDisplay
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -74,7 +75,11 @@ class QuizViewModel(
     val isQuizFinished: Boolean get() = _quizState.value.quizFinished
     val quiz: List<MathProblem> get() = _quiz.value
     val currentProblem: MathProblem?
-        get() = if (quiz.isNotEmpty() && quizIndex in quiz.indices) quiz[quizIndex] else null
+        get() = if(handler!!.problemMode()== ProblemMode.FINITE){
+            if (quiz.isNotEmpty() && quizIndex in quiz.indices) quiz[quizIndex] else null
+        }else{
+            handler!!.getNextProblem(modeConfig)
+        }
 
     fun startQuiz(quizConfiguration: QuizConfiguration) {
         modeConfig = quizConfiguration.toModeConfiguration()
