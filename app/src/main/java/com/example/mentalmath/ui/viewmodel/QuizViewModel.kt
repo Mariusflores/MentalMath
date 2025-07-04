@@ -7,12 +7,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mentalmath.logic.managers.QuizManager
+import com.example.mentalmath.logic.gamemodes.GameModeHandler
+import com.example.mentalmath.logic.gamemodes.factory.GameModeHandlerFactory
+import com.example.mentalmath.logic.managers.QuizProgressionManager
 import com.example.mentalmath.logic.managers.TimerManager
-import com.example.mentalmath.logic.models.MathProblem
-import com.example.mentalmath.logic.models.QuizConfiguration
-import com.example.mentalmath.logic.models.QuizState
-import com.example.mentalmath.logic.models.ScoreCard
+import com.example.mentalmath.logic.models.core.MathProblem
+import com.example.mentalmath.logic.models.quiz.TimerType
+import com.example.mentalmath.logic.models.quiz.QuizConfiguration
+import com.example.mentalmath.logic.models.quiz.QuizState
+import com.example.mentalmath.logic.models.quiz.ScoreCard
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,8 +29,9 @@ class QuizViewModel(
 
 ) : ViewModel() {
 
-    private val quizManager: QuizManager = QuizManager()
+    private val progressionManager: QuizProgressionManager = QuizProgressionManager()
     private val timerManager: TimerManager = TimerManager(dispatcher)
+    var handler: GameModeHandler? = null
 
     private val _elapsedTime = mutableStateOf(Duration.ZERO)
     val elapsedTime: State<Duration> get() = _elapsedTime
@@ -66,10 +70,22 @@ class QuizViewModel(
         get() = if (quiz.isNotEmpty() && quizIndex in quiz.indices) quiz[quizIndex] else null
 
     fun startQuiz(quizConfiguration: QuizConfiguration) {
-        if(enableTimer) timerManager.startTimer()
-        _quiz.value = quizManager.getQuizByDifficulty(quizConfiguration.difficulty, quizConfiguration.operators, quizConfiguration.quizLength)
+        val modeConfig = quizConfiguration.toModeConfiguration()
+        handler = GameModeHandlerFactory.create(modeConfig)
+
+        _quiz.value = GameModeHandlerFactory.startQuiz(handler!!, modeConfig)
+        initiateTimer()
+
         _quizState.value = QuizState(0, false)
         resetInput()
+    }
+
+    private fun initiateTimer() {
+        when (handler!!.timerType()) {
+            TimerType.STOPWATCH -> timerManager.startStopwatch()
+            TimerType.COUNTDOWN -> timerManager.startCountDown()
+            TimerType.NONE -> {}
+        }
     }
 
     override fun onCleared() {
@@ -80,7 +96,7 @@ class QuizViewModel(
     fun onSubmitClick() {
         val userAnswer = answer.value.toIntOrNull()
         if (userAnswer == null) {
-            _inputError.value = quizManager.returnInvalidInputString()
+            _inputError.value = progressionManager.returnInvalidInputString()
             return
         }
         // Make sure current problem is not null
@@ -88,21 +104,21 @@ class QuizViewModel(
 
         incrementScore(userAnswer, problem)
 
-        _quizState.value = quizManager.progressQuiz(quizIndex, quiz.size)
-        _answer.value = quizManager.resetAnswer()
+        _quizState.value = progressionManager.progressQuiz(quizIndex, quiz.size)
+        _answer.value = progressionManager.resetAnswer()
 
         endOnQuizFinished()
     }
     fun onEndClick() {
-        _quizState.value = quizManager.endQuiz(_quizState.value.quizIndex)
+        _quizState.value = progressionManager.endQuiz(_quizState.value.quizIndex)
         val elapsed = finalizeTimerIfNeeded()
-        _scoreCard.value = quizManager.getScoreCard(score.value, quiz.size, elapsed)
+        _scoreCard.value = progressionManager.getScoreCard(score.value, quiz.size, elapsed)
     }
 
     private fun endOnQuizFinished() {
-        if (quizManager.verifyQuizFinished(_quizState.value)) {
+        if (progressionManager.verifyQuizFinished(_quizState.value)) {
             val elapsed = finalizeTimerIfNeeded()
-            _scoreCard.value = quizManager.getScoreCard(score.value, quiz.size, elapsed
+            _scoreCard.value = progressionManager.getScoreCard(score.value, quiz.size, elapsed
             )
 
         }
@@ -111,7 +127,7 @@ class QuizViewModel(
         userAnswer: Int,
         problem: MathProblem
     ) {
-        if (quizManager.checkAnswer(userAnswer, problem.correctAnswer)) {
+        if (progressionManager.checkAnswer(userAnswer, problem.correctAnswer)) {
             _score.value++; lastAnswerCorrect = true
         } else {
             lastAnswerCorrect = false
@@ -121,7 +137,7 @@ class QuizViewModel(
 
     private fun finalizeTimerIfNeeded(): Duration {
         val elapsed = if (enableTimer || _elapsedTime.value != Duration.ZERO){
-            timerManager.stopTimer()
+            timerManager.stopStopwatch()
             val time = timerManager.elapsedTime.value
             timerManager.resetTimer()
             time
