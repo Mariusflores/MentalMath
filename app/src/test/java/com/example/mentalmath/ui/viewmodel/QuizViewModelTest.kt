@@ -1,7 +1,8 @@
 package com.example.mentalmath.ui.viewmodel
 
-import com.example.mentalmath.logic.models.Operator
-import com.example.mentalmath.logic.models.QuizConfiguration
+import com.example.mentalmath.logic.models.gamemode.GameMode
+import com.example.mentalmath.logic.models.core.Operator
+import com.example.mentalmath.logic.models.quiz.QuizConfiguration
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +46,9 @@ class QuizViewModelTest {
         val operatorArray = Operator.OperatorConverter.toOperatorArray(operatorStringList)
         val quizLength = "6"
         val difficulty = "Hard"
-        val quizConfiguration = QuizConfiguration(difficulty, quizLength, operatorStringList)
+        val quizConfiguration = QuizConfiguration(difficulty, quizLength, operatorStringList,
+            GameMode.Casual
+        )
 
         quizViewModel.startQuiz(quizConfiguration)
 
@@ -66,7 +69,8 @@ class QuizViewModelTest {
         val operatorStringList: List<String> = listOf("+", "×", "÷")
         val quizLength = "6"
         val difficulty = "Hard"
-        val quizConfiguration = QuizConfiguration(difficulty, quizLength, operatorStringList)
+        val quizConfiguration = QuizConfiguration(difficulty, quizLength, operatorStringList,
+            GameMode.Casual)
 
         quizViewModel.startQuiz(quizConfiguration)
 
@@ -83,7 +87,7 @@ class QuizViewModelTest {
         val operatorStringList: List<String> = listOf("+")
         val quizLength = "2"
         val difficulty = "Easy"
-        val quizConfiguration = QuizConfiguration(difficulty, quizLength, operatorStringList)
+        val quizConfiguration = QuizConfiguration(difficulty, quizLength, operatorStringList, GameMode.Casual)
 
         quizViewModel.startQuiz(quizConfiguration)
 
@@ -101,7 +105,7 @@ class QuizViewModelTest {
         val operatorStringList: List<String> = listOf("+")
         val quizLength = "6"
         val difficulty = "Easy"
-        val quizConfiguration = QuizConfiguration(difficulty, quizLength, operatorStringList)
+        val quizConfiguration = QuizConfiguration(difficulty, quizLength, operatorStringList, GameMode.Casual)
 
         quizViewModel.startQuiz(quizConfiguration)
 

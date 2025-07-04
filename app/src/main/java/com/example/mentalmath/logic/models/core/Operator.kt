@@ -1,4 +1,4 @@
-package com.example.mentalmath.logic.models
+package com.example.mentalmath.logic.models.core
 
 enum class Operator {
     ADD, SUB, MUL, DIV;

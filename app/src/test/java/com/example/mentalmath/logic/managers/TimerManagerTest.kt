@@ -31,18 +31,18 @@ class TimerManagerTest {
     @Test
     fun timer_accumulatesCorrectTime() = runTest{
         val timer = TimerManager(dispatcher = testDispatcher, timerScope = this)
-        timer.startTimer()
+        timer.startStopwatch()
         advanceTimeBy(150)
-        timer.stopTimer()
+        timer.stopStopwatch()
         assertTrue(timer.elapsedTime.first() > Duration.ZERO)
     }
     @Test
     fun startTimer_multipleCalls_onlyStartsOnce() = runTest{
         val timer = TimerManager(dispatcher = testDispatcher, timerScope = this)
-        timer.startTimer()
-        timer.startTimer()
+        timer.startStopwatch()
+        timer.startStopwatch()
         advanceTimeBy(100)
-        timer.stopTimer()
+        timer.stopStopwatch()
 
         val elapsed = timer.elapsedTime.first()
         val d: Duration = 200.milliseconds
@@ -54,7 +54,7 @@ class TimerManagerTest {
     fun resetTimer_clearsAccumulatedTime() = runTest{
         val timer = TimerManager(dispatcher = testDispatcher, timerScope = this)
 
-        timer.startTimer()
+        timer.startStopwatch()
         advanceTimeBy(200)
         timer.resetTimer()
         assertTrue(timer.elapsedTime.first() == Duration.ZERO)
@@ -63,10 +63,10 @@ class TimerManagerTest {
     @Test
     fun pauseTimer_stopsWithoutResetting() = runTest {
         val timer = TimerManager(dispatcher = testDispatcher, timerScope = this)
-        timer.startTimer()
+        timer.startStopwatch()
 
         advanceTimeBy(200)
-        timer.pauseTimer()
+        timer.pauseStopwatch()
         val elapsedAfterPause = timer.elapsedTime.first()
         advanceTimeBy(100)
         assertTrue(timer.elapsedTime.first() == elapsedAfterPause)
@@ -76,7 +76,7 @@ class TimerManagerTest {
     fun dispose_cancelsTimerScope() = runTest {
         val timer = TimerManager(dispatcher = testDispatcher, timerScope = backgroundScope)
 
-        timer.startTimer()
+        timer.startStopwatch()
         advanceTimeBy(50)
         timer.dispose()
 
@@ -87,14 +87,14 @@ class TimerManagerTest {
     @Test
     fun resumeTimer_continuesFromPausedTime() = runTest {
         val timer = TimerManager(dispatcher = testDispatcher, timerScope = this)
-        timer.startTimer()
+        timer.startStopwatch()
 
         advanceTimeBy(100)
-        timer.pauseTimer()
+        timer.pauseStopwatch()
         val pausedTime = timer.elapsedTime.first()
-        timer.startTimer()
+        timer.startStopwatch()
         advanceTimeBy(100)
-        timer.stopTimer()
+        timer.stopStopwatch()
         val resumedTime = timer.elapsedTime.first()
 
         assertTrue(resumedTime > pausedTime)

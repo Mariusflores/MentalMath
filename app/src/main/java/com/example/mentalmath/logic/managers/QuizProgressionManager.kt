@@ -1,18 +1,12 @@
 package com.example.mentalmath.logic.managers
 
-import com.example.mentalmath.logic.generators.MathQuizGenerator
-import com.example.mentalmath.logic.models.Difficulty
-import com.example.mentalmath.logic.models.MathProblem
-import com.example.mentalmath.logic.models.Operator
-import com.example.mentalmath.logic.models.QuizState
-import com.example.mentalmath.logic.models.ScoreCard
+import com.example.mentalmath.logic.models.quiz.QuizState
+import com.example.mentalmath.logic.models.quiz.ScoreCard
 import kotlin.time.Duration
 
 private const val INVALID_INPUT = "Please enter a valid number."
 
-class QuizManager {
-
-
+class QuizProgressionManager {
 
     fun checkAnswer(inputAnswer: Int, answer: Int ): Boolean{
 
@@ -55,18 +49,6 @@ class QuizManager {
     }
 
     fun returnInvalidInputString(): String{
-         return INVALID_INPUT
+        return INVALID_INPUT
     }
-
-    fun getQuizByDifficulty(
-        difficulty: String,
-        operatorsStringList: List<String>,
-        quizLength: String): List<MathProblem> {
-        val quizDifficulty: Difficulty = Difficulty.DifficultyConverter.toDifficulty(difficulty.lowercase())
-        val operatorArray = Operator.OperatorConverter.toOperatorArray(operatorsStringList)
-        val length: Int = quizLength.toInt()
-
-        return MathQuizGenerator.generateRandomOperatorQuiz(quizDifficulty, operatorArray, length)
-    }
-
 }

@@ -23,33 +23,36 @@ class TimerManager(
     private val _elapsedTime = MutableStateFlow(Duration.ZERO)
     val elapsedTime: StateFlow<Duration> get() = _elapsedTime
 
-     fun startTimer() {
+     fun startStopwatch() {
         if (isRunning) return
 
         isRunning = true
         startMark = timeSource.markNow()
 
-         launchTimerLoop()
+         launchStopwatchLoop()
     }
 
-    fun stopTimer() {
+    fun stopStopwatch() {
         if (!isRunning || startMark == null) return
-        accumulated += elapsedSinceStart()
+        accumulated += stopwatchElapsedSinceStart()
         isRunning = false
     }
-    fun pauseTimer() = stopTimer()
+    fun pauseStopwatch() = stopStopwatch()
     fun resetTimer() {
-        stopTimer()
+        stopStopwatch()
         accumulated = Duration.ZERO
         _elapsedTime.value = Duration.ZERO
     }
     fun dispose() = timerScope.cancel()
 
-    private fun launchTimerLoop() = timerScope.launch {
+    private fun launchStopwatchLoop() = timerScope.launch {
         while (isRunning) {
-            _elapsedTime.value = accumulated + elapsedSinceStart()
+            _elapsedTime.value = accumulated + stopwatchElapsedSinceStart()
             delay(50)
         }
     }
-    private fun elapsedSinceStart(): Duration = startMark?.elapsedNow() ?: Duration.ZERO
+    private fun stopwatchElapsedSinceStart(): Duration = startMark?.elapsedNow() ?: Duration.ZERO
+    fun startCountDown() {
+        TODO("Not yet implemented")
+    }
 }

@@ -1,8 +1,7 @@
 package com.example.mentalmath.logic.generators
 
-import com.example.mentalmath.logic.models.Difficulty
-import com.example.mentalmath.logic.models.MathProblem
-import com.example.mentalmath.logic.models.Operator
+import com.example.mentalmath.logic.models.core.Difficulty
+import com.example.mentalmath.logic.models.core.Operator
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
 
@@ -16,21 +15,21 @@ class MathProblemGeneratorTest {
         repeat(100) {
             val mathProblem =
                 MathProblemGenerator.generateRandomProblem(Difficulty.EASY, arrayOf(Operator.ADD))
-            assertAdditionOperands(mathProblem.a, mathProblem.b, Difficulty.EASY)
-            assertAnswer(mathProblem.correctAnswer, mathProblem.a, mathProblem.b, Operator.ADD)
+            assertAdditionOperands(mathProblem.operandA, mathProblem.operandB, Difficulty.EASY)
+            assertAnswer(mathProblem.correctAnswer, mathProblem.operandA, mathProblem.operandB, Operator.ADD)
 
         }
         repeat(100) {
             val mathProblem =
                 MathProblemGenerator.generateRandomProblem(Difficulty.MEDIUM, arrayOf(Operator.ADD))
-            assertAdditionOperands(mathProblem.a, mathProblem.b, Difficulty.MEDIUM)
-            assertAnswer(mathProblem.correctAnswer, mathProblem.a, mathProblem.b, Operator.ADD)
+            assertAdditionOperands(mathProblem.operandA, mathProblem.operandB, Difficulty.MEDIUM)
+            assertAnswer(mathProblem.correctAnswer, mathProblem.operandA, mathProblem.operandB, Operator.ADD)
         }
         repeat(100) {
             val mathProblem =
                 MathProblemGenerator.generateRandomProblem(Difficulty.HARD, arrayOf(Operator.ADD))
-            assertAdditionOperands(mathProblem.a, mathProblem.b, Difficulty.HARD)
-            assertAnswer(mathProblem.correctAnswer, mathProblem.a, mathProblem.b, Operator.ADD)
+            assertAdditionOperands(mathProblem.operandA, mathProblem.operandB, Difficulty.HARD)
+            assertAnswer(mathProblem.correctAnswer, mathProblem.operandA, mathProblem.operandB, Operator.ADD)
         }
 
     }
@@ -41,20 +40,20 @@ class MathProblemGeneratorTest {
         repeat(100) {
             val mathProblem =
                 MathProblemGenerator.generateRandomProblem(Difficulty.EASY, arrayOf(Operator.SUB))
-            assertSubtractionOperands(mathProblem.a, mathProblem.b, Difficulty.EASY)
-            assertAnswer(mathProblem.correctAnswer, mathProblem.a, mathProblem.b, Operator.SUB)
+            assertSubtractionOperands(mathProblem.operandA, mathProblem.operandB, Difficulty.EASY)
+            assertAnswer(mathProblem.correctAnswer, mathProblem.operandA, mathProblem.operandB, Operator.SUB)
         }
         repeat(100) {
             val mathProblem =
                 MathProblemGenerator.generateRandomProblem(Difficulty.MEDIUM, arrayOf(Operator.SUB))
-            assertSubtractionOperands(mathProblem.a, mathProblem.b, Difficulty.MEDIUM)
-            assertAnswer(mathProblem.correctAnswer, mathProblem.a, mathProblem.b, Operator.SUB)
+            assertSubtractionOperands(mathProblem.operandA, mathProblem.operandB, Difficulty.MEDIUM)
+            assertAnswer(mathProblem.correctAnswer, mathProblem.operandA, mathProblem.operandB, Operator.SUB)
         }
         repeat(100) {
             val mathProblem =
                 MathProblemGenerator.generateRandomProblem(Difficulty.HARD, arrayOf(Operator.SUB))
-            assertSubtractionOperands(mathProblem.a, mathProblem.b, Difficulty.HARD)
-            assertAnswer(mathProblem.correctAnswer, mathProblem.a, mathProblem.b, Operator.SUB)
+            assertSubtractionOperands(mathProblem.operandA, mathProblem.operandB, Difficulty.HARD)
+            assertAnswer(mathProblem.correctAnswer, mathProblem.operandA, mathProblem.operandB, Operator.SUB)
         }
     }
 
@@ -64,20 +63,20 @@ class MathProblemGeneratorTest {
         repeat(100) {
             val mathProblem =
                 MathProblemGenerator.generateRandomProblem(Difficulty.EASY, arrayOf(Operator.MUL))
-            assertMultiplicationOperands(mathProblem.a, mathProblem.b, Difficulty.EASY)
-            assertAnswer(mathProblem.correctAnswer, mathProblem.a, mathProblem.b, Operator.MUL)
+            assertMultiplicationOperands(mathProblem.operandA, mathProblem.operandB, Difficulty.EASY)
+            assertAnswer(mathProblem.correctAnswer, mathProblem.operandA, mathProblem.operandB, Operator.MUL)
         }
         repeat(100) {
             val mathProblem =
                 MathProblemGenerator.generateRandomProblem(Difficulty.MEDIUM, arrayOf(Operator.MUL))
-            assertMultiplicationOperands(mathProblem.a, mathProblem.b, Difficulty.MEDIUM)
-            assertAnswer(mathProblem.correctAnswer, mathProblem.a, mathProblem.b, Operator.MUL)
+            assertMultiplicationOperands(mathProblem.operandA, mathProblem.operandB, Difficulty.MEDIUM)
+            assertAnswer(mathProblem.correctAnswer, mathProblem.operandA, mathProblem.operandB, Operator.MUL)
         }
         repeat(100) {
             val mathProblem =
                 MathProblemGenerator.generateRandomProblem(Difficulty.HARD, arrayOf(Operator.MUL))
-            assertMultiplicationOperands(mathProblem.a, mathProblem.b, Difficulty.HARD)
-            assertAnswer(mathProblem.correctAnswer, mathProblem.a, mathProblem.b, Operator.MUL)
+            assertMultiplicationOperands(mathProblem.operandA, mathProblem.operandB, Difficulty.HARD)
+            assertAnswer(mathProblem.correctAnswer, mathProblem.operandA, mathProblem.operandB, Operator.MUL)
         }
     }
 
@@ -87,20 +86,20 @@ class MathProblemGeneratorTest {
         repeat(100) {
             val mathProblem =
                 MathProblemGenerator.generateRandomProblem(Difficulty.EASY, arrayOf(Operator.DIV))
-            assertDivisionOperands(mathProblem.a, mathProblem.b, Difficulty.EASY)
-            assertAnswer(mathProblem.correctAnswer, mathProblem.a, mathProblem.b, Operator.DIV)
+            assertDivisionOperands(mathProblem.operandA, mathProblem.operandB, Difficulty.EASY)
+            assertAnswer(mathProblem.correctAnswer, mathProblem.operandA, mathProblem.operandB, Operator.DIV)
         }
         repeat(100) {
             val mathProblem =
                 MathProblemGenerator.generateRandomProblem(Difficulty.MEDIUM, arrayOf(Operator.DIV))
-            assertDivisionOperands(mathProblem.a, mathProblem.b, Difficulty.MEDIUM)
-            assertAnswer(mathProblem.correctAnswer, mathProblem.a, mathProblem.b, Operator.DIV)
+            assertDivisionOperands(mathProblem.operandA, mathProblem.operandB, Difficulty.MEDIUM)
+            assertAnswer(mathProblem.correctAnswer, mathProblem.operandA, mathProblem.operandB, Operator.DIV)
         }
         repeat(100) {
             val mathProblem =
                 MathProblemGenerator.generateRandomProblem(Difficulty.HARD, arrayOf(Operator.DIV))
-            assertDivisionOperands(mathProblem.a, mathProblem.b, Difficulty.HARD)
-            assertAnswer(mathProblem.correctAnswer, mathProblem.a, mathProblem.b, Operator.DIV)
+            assertDivisionOperands(mathProblem.operandA, mathProblem.operandB, Difficulty.HARD)
+            assertAnswer(mathProblem.correctAnswer, mathProblem.operandA, mathProblem.operandB, Operator.DIV)
         }
     }
 

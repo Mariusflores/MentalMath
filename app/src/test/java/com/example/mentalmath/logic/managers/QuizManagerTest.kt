@@ -1,9 +1,9 @@
 package com.example.mentalmath.logic.managers
 
 import com.example.mentalmath.logic.generators.MathProblemGenerator
-import com.example.mentalmath.logic.models.Difficulty
-import com.example.mentalmath.logic.models.Operator
-import com.example.mentalmath.logic.models.QuizState
+import com.example.mentalmath.logic.models.core.Difficulty
+import com.example.mentalmath.logic.models.core.Operator
+import com.example.mentalmath.logic.models.quiz.QuizState
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
@@ -12,12 +12,12 @@ import kotlin.random.Random
 import kotlin.time.Duration
 
 class QuizManagerTest {
-    private val quizManager: QuizManager = QuizManager()
+    private val quizManager: QuizFactory = QuizFactory()
 
     @Test
     fun checkAnswer_returnsTrueForCorrectAnswer(){
         val mathProblem = MathProblemGenerator.generateRandomProblem(Difficulty.EASY, arrayOf(Operator.ADD))
-        val inputAnswer = mathProblem.a + mathProblem.b
+        val inputAnswer = mathProblem.operandA + mathProblem.operandB
         val wrongAnswer = mathProblem.correctAnswer + 1
 
         assertTrue(quizManager.checkAnswer(inputAnswer, mathProblem.correctAnswer))
@@ -87,13 +87,13 @@ class QuizManagerTest {
         val length = "7"
         var allowedOperators = Operator.OperatorConverter.toOperatorArray(operatorList)
 
-        var quiz = quizManager.getQuizByDifficulty(difficulty, operatorList, length)
+        var quiz = quizManager.generateQuizByGameMode(difficulty, operatorList, length)
         assertEquals(quiz.size, length.toInt())
         assertTrue(quiz.all { it.operator in allowedOperators })
 
         operatorList = listOf("×", "÷")
         allowedOperators = Operator.OperatorConverter.toOperatorArray(operatorList)
-        quiz = quizManager.getQuizByDifficulty(difficulty, operatorList, length)
+        quiz = quizManager.generateQuizByGameMode(difficulty, operatorList, length)
         assertTrue(quiz.all { it.operator in allowedOperators })
 
 

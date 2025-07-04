@@ -1,4 +1,4 @@
-package com.example.mentalmath.logic.models
+package com.example.mentalmath.logic.models.quiz
 
 import kotlin.time.Duration
 

@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mentalmath.R
-import com.example.mentalmath.logic.models.QuizConfiguration
+import com.example.mentalmath.logic.models.quiz.QuizConfiguration
 import com.example.mentalmath.ui.components.DropdownTemplate
 import com.example.mentalmath.ui.components.OperatorCheckBox
 import com.example.mentalmath.ui.viewmodel.QuizViewModel
