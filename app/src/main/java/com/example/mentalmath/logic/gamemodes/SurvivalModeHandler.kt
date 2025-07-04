@@ -8,6 +8,9 @@ import kotlin.time.Duration
 
 class SurvivalModeHandler: GameModeHandler {
     val quizFactory: QuizFactory = QuizFactory()
+
+    private var mistakes = 0
+    private val lives = 3
     override fun startGame(modeConfiguration: ModeConfiguration): List<MathProblem> {
         return quizFactory.generateQuizByGameMode(modeConfiguration)
     }
@@ -20,11 +23,11 @@ class SurvivalModeHandler: GameModeHandler {
 
     override fun timeLimit(): Duration? = null
 
-    override fun onAnswerSubmitted() {
-        TODO("Not yet implemented")
+    override fun onAnswerSubmitted(wasCorrect: Boolean) {
+        if(!wasCorrect) mistakes++
     }
 
     override fun shouldEndGame(): Boolean {
-        TODO("Not yet implemented")
+        return mistakes == lives
     }
 }

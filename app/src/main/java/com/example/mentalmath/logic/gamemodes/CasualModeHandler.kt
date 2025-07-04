@@ -25,12 +25,13 @@ class CasualModeHandler: GameModeHandler {
 
     override fun timeLimit(): Duration? = null
 
-    override fun onAnswerSubmitted() {
-        TODO("Not yet implemented")
+    override fun onAnswerSubmitted(wasCorrect: Boolean) {
+        index++
     }
 
+
     override fun shouldEndGame(): Boolean {
-        TODO("Not yet implemented")
+        return index > quiz.size - 1
     }
 
 

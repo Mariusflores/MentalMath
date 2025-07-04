@@ -10,7 +10,7 @@ interface GameModeHandler {
     fun getNextProblem(modeConfiguration: ModeConfiguration): MathProblem
     fun timerType(): TimerType
     fun timeLimit(): Duration?
-    fun onAnswerSubmitted()
+    fun onAnswerSubmitted(wasCorrect: Boolean)
     fun shouldEndGame(): Boolean
 
 }

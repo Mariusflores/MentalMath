@@ -7,6 +7,8 @@ import com.example.mentalmath.logic.models.gamemode.ModeConfiguration
 import kotlin.time.Duration
 
 class PracticeModeHandler: GameModeHandler {
+    var total = 0
+    var correct = 0
     val quizFactory: QuizFactory = QuizFactory()
     override fun startGame(modeConfiguration: ModeConfiguration): List<MathProblem> {
         return quizFactory.generateQuizByGameMode(modeConfiguration)
@@ -20,8 +22,9 @@ class PracticeModeHandler: GameModeHandler {
 
     override fun timeLimit(): Duration? = null
 
-    override fun onAnswerSubmitted() {
-        TODO("Not yet implemented")
+    override fun onAnswerSubmitted(wasCorrect: Boolean) {
+        if(wasCorrect) correct++
+        total++
     }
 
     override fun shouldEndGame(): Boolean {

@@ -25,11 +25,11 @@ class TimeAttackModeHandler: GameModeHandler {
 
     override fun timeLimit(): Duration? = 60.seconds
 
-    override fun onAnswerSubmitted() {
-        TODO("Not yet implemented")
+    override fun onAnswerSubmitted(wasCorrect: Boolean) {
+        index++
     }
 
     override fun shouldEndGame(): Boolean {
-        TODO("Not yet implemented")
+        return index > quiz.size - 1
     }
 }

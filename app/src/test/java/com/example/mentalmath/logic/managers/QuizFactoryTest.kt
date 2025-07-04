@@ -6,9 +6,11 @@ import junit.framework.TestCase.assertTrue
 import org.junit.Test
 
 class QuizFactoryTest {
-    /*
+
     @Test
+
     fun getQuizByDifficulty_convertsStringsAndReturnsQuiz(){
+        /*
         var operatorList: List<String> = listOf("+", "-", "×", "÷")
         val difficulty = "Easy"
         val length = "7"
@@ -22,7 +24,7 @@ class QuizFactoryTest {
         allowedOperators = Operator.OperatorConverter.toOperatorArray(operatorList)
         quiz = quizProgressionManager.generateQuizByGameMode(difficulty, operatorList, length)
         assertTrue(quiz.all { it.operator in allowedOperators })
-    }
 
      */
+    }
 }
