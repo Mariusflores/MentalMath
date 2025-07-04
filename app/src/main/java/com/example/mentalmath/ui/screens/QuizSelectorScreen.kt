@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mentalmath.R
+import com.example.mentalmath.logic.models.gamemode.GameMode
 import com.example.mentalmath.logic.models.quiz.QuizConfiguration
 import com.example.mentalmath.ui.components.DropdownTemplate
 import com.example.mentalmath.ui.components.OperatorCheckBox
@@ -45,6 +46,7 @@ fun QuizSelectorScreen(
     var selectedDifficulty by remember { mutableStateOf(settingsViewModel.difficulty.value) }
     var quizLength by remember { mutableStateOf(settingsViewModel.quizLength.value) }
     val operatorList = settingsViewModel.operators.value
+    val gameMode: GameMode by remember { mutableStateOf(GameMode.Casual) }
 
 
     val difficultyLabel = stringResource(R.string.difficulty_label)
@@ -125,7 +127,8 @@ fun QuizSelectorScreen(
                     QuizConfiguration(
                         settingsViewModel.difficulty.value,
                         settingsViewModel.quizLength.value,
-                        settingsViewModel.operators.value
+                        settingsViewModel.operators.value,
+                        TODO()
                     )
                 )
 

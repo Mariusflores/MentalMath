@@ -60,8 +60,7 @@ class QuizFactory {
     }
 
     private fun generateCasualQuiz(modeConfig: ModeConfiguration):List<MathProblem> {
-        var length = 0
-        length = modeConfig.quizLength ?: 0
+        val length = modeConfig.quizLength ?: 0
         return MathQuizGenerator.generateRandomOperatorQuiz(modeConfig.difficulty, modeConfig.operators, length )
 
     }

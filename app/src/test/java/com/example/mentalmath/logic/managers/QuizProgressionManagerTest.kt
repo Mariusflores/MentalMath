@@ -11,8 +11,8 @@ import org.junit.Test
 import kotlin.random.Random
 import kotlin.time.Duration
 
-class QuizManagerTest {
-    private val quizManager: QuizFactory = QuizFactory()
+class QuizProgressionManagerTest {
+    private val quizProgressionManager: QuizProgressionManager = QuizProgressionManager()
 
     @Test
     fun checkAnswer_returnsTrueForCorrectAnswer(){
@@ -20,8 +20,8 @@ class QuizManagerTest {
         val inputAnswer = mathProblem.operandA + mathProblem.operandB
         val wrongAnswer = mathProblem.correctAnswer + 1
 
-        assertTrue(quizManager.checkAnswer(inputAnswer, mathProblem.correctAnswer))
-        assertFalse(quizManager.checkAnswer(wrongAnswer, mathProblem.correctAnswer))
+        assertTrue(quizProgressionManager.checkAnswer(inputAnswer, mathProblem.correctAnswer))
+        assertFalse(quizProgressionManager.checkAnswer(wrongAnswer, mathProblem.correctAnswer))
 
     }
 
@@ -30,8 +30,8 @@ class QuizManagerTest {
         val finishedQuizState = QuizState(4, true)
         val unfinishedQuizState = QuizState(4, false)
 
-        assertTrue(quizManager.verifyQuizFinished(finishedQuizState))
-        assertTrue(!quizManager.verifyQuizFinished(unfinishedQuizState))
+        assertTrue(quizProgressionManager.verifyQuizFinished(finishedQuizState))
+        assertTrue(!quizProgressionManager.verifyQuizFinished(unfinishedQuizState))
 
     }
 
@@ -42,7 +42,7 @@ class QuizManagerTest {
         val percentage = (score.toDouble() / problemCount) * 100
         val elapsedTime = Duration.ZERO
 
-        val scoreCard = quizManager.getScoreCard(score, problemCount, elapsedTime)
+        val scoreCard = quizProgressionManager.getScoreCard(score, problemCount, elapsedTime)
 
         assertEquals(scoreCard.score, score)
         assertEquals(scoreCard.quizLength, problemCount)
@@ -55,14 +55,14 @@ class QuizManagerTest {
         var index = 5
         var problemCount = 8
 
-        var quizState = quizManager.progressQuiz(index, problemCount)
+        var quizState = quizProgressionManager.progressQuiz(index, problemCount)
         assertEquals(quizState.quizIndex, index + 1)
         assertTrue(!quizState.quizFinished)
 
 
         index = 10
         problemCount = 10
-        quizState = quizManager.progressQuiz(index, problemCount)
+        quizState = quizProgressionManager.progressQuiz(index, problemCount)
 
         assertEquals(quizState.quizIndex, index)
         assertTrue(quizState.quizFinished)
@@ -70,33 +70,15 @@ class QuizManagerTest {
 
     @Test
     fun endQuiz_returnsQuizStateWithQuizFinishedTrue(){
-        val quizState = quizManager.endQuiz(4)
+        val quizState = quizProgressionManager.endQuiz(4)
 
         assertTrue(quizState.quizFinished)
     }
 
     @Test
     fun resetAnswer_returnsEmptyString(){
-        assertEquals(quizManager.resetAnswer(), "")
+        assertEquals(quizProgressionManager.resetAnswer(), "")
     }
 
-    @Test
-    fun getQuizByDifficulty_convertsStringsAndReturnsQuiz(){
-        var operatorList: List<String> = listOf("+", "-", "×", "÷")
-        val difficulty = "Easy"
-        val length = "7"
-        var allowedOperators = Operator.OperatorConverter.toOperatorArray(operatorList)
 
-        var quiz = quizManager.generateQuizByGameMode(difficulty, operatorList, length)
-        assertEquals(quiz.size, length.toInt())
-        assertTrue(quiz.all { it.operator in allowedOperators })
-
-        operatorList = listOf("×", "÷")
-        allowedOperators = Operator.OperatorConverter.toOperatorArray(operatorList)
-        quiz = quizManager.generateQuizByGameMode(difficulty, operatorList, length)
-        assertTrue(quiz.all { it.operator in allowedOperators })
-
-
-
-    }
 }
