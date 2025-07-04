@@ -6,41 +6,46 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.mentalmath.logic.managers.QuizManager
+import com.example.mentalmath.logic.managers.TimerManager
 import com.example.mentalmath.logic.models.MathProblem
 import com.example.mentalmath.logic.models.QuizConfiguration
 import com.example.mentalmath.logic.models.QuizState
 import com.example.mentalmath.logic.models.ScoreCard
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
-import kotlin.time.TimeSource
 
 
-private const val INVALID_INPUT = "Please enter a valid number."
 
 class QuizViewModel(
-    private val dispatcher: CoroutineDispatcher = Dispatchers.Main,
+     dispatcher: CoroutineDispatcher = Dispatchers.Main,
     private val enableTimer: Boolean = true
+
 ) : ViewModel() {
 
     private val quizManager: QuizManager = QuizManager()
-    private val timerScope = CoroutineScope(dispatcher + SupervisorJob())
+    private val timerManager: TimerManager = TimerManager(dispatcher)
 
+    private val _elapsedTime = mutableStateOf(Duration.ZERO)
+    val elapsedTime: State<Duration> get() = _elapsedTime
 
+    init {
+        viewModelScope.launch {
+            timerManager.elapsedTime.collect { time ->
+                _elapsedTime.value = time
+
+            }
+        }
+    }
     // Private mutable variables
     private val _quiz: MutableState<List<MathProblem>> = mutableStateOf(emptyList())
     private val _score = mutableStateOf(0)
     private val _answer = mutableStateOf("")
     private val _inputError = mutableStateOf("")
     private val _quizState = mutableStateOf(QuizState(0, false))
-    private val _difficulty = mutableStateOf("Easy")
-    private val _quizLength = mutableStateOf("10")
     private val _scoreCard = mutableStateOf(ScoreCard(0, 0, 0.0, Duration.ZERO))
 
     var lastAnswerCorrect by mutableStateOf<Boolean?>(null)
@@ -51,8 +56,6 @@ class QuizViewModel(
     val score: State<Int> get() = _score
     val answer: State<String> get() = _answer
     val inputError: State<String> get() = _inputError
-    val difficulty: State<String> get() = _difficulty
-    val quizLength: State<String> get() = _quizLength
     val scoreCard: State<ScoreCard> get() = _scoreCard
 
     // No need for reactivity
@@ -62,59 +65,22 @@ class QuizViewModel(
     val currentProblem: MathProblem?
         get() = if (quiz.isNotEmpty() && quizIndex in quiz.indices) quiz[quizIndex] else null
 
-    //Timer variables
-    private val _elapsedTime = mutableStateOf(Duration.ZERO)
-    private var isTimerRunning by mutableStateOf(false)
-    private var startMark by mutableStateOf(TimeSource.Monotonic.markNow())
-    private var accumulated = Duration.ZERO
-    val elapsedTime: State<Duration> get() = _elapsedTime
-
-
-
     fun startQuiz(quizConfiguration: QuizConfiguration) {
-        if(enableTimer) startTimer()
+        if(enableTimer) timerManager.startTimer()
         _quiz.value = quizManager.getQuizByDifficulty(quizConfiguration.difficulty, quizConfiguration.operators, quizConfiguration.quizLength)
         _quizState.value = QuizState(0, false)
-        _score.value = 0
-        _answer.value = ""
-        _inputError.value = ""
-    }
-
-    private fun startTimer() {
-        if (isTimerRunning) return
-
-        isTimerRunning = true
-        startMark = TimeSource.Monotonic.markNow()
-
-        timerScope.launch(dispatcher){
-            while (isTimerRunning) {
-                _elapsedTime.value = accumulated + startMark.elapsedNow()
-                delay(50)
-            }
-        }
+        resetInput()
     }
 
     override fun onCleared() {
         super.onCleared()
-        timerScope.cancel()
-    }
-
-    private fun stopTimer() {
-        if (!isTimerRunning) return
-        accumulated += startMark.elapsedNow()
-        isTimerRunning = false
-    }
-
-    fun resetTimer() {
-        isTimerRunning = false
-        accumulated = Duration.ZERO
-        _elapsedTime.value = Duration.ZERO
+        timerManager.dispose()
     }
 
     fun onSubmitClick() {
         val userAnswer = answer.value.toIntOrNull()
         if (userAnswer == null) {
-            _inputError.value = INVALID_INPUT
+            _inputError.value = quizManager.returnInvalidInputString()
             return
         }
         // Make sure current problem is not null
@@ -127,15 +93,20 @@ class QuizViewModel(
 
         endOnQuizFinished()
     }
+    fun onEndClick() {
+        _quizState.value = quizManager.endQuiz(_quizState.value.quizIndex)
+        val elapsed = finalizeTimerIfNeeded()
+        _scoreCard.value = quizManager.getScoreCard(score.value, quiz.size, elapsed)
+    }
 
     private fun endOnQuizFinished() {
         if (quizManager.verifyQuizFinished(_quizState.value)) {
-            stopTimer()
-            _scoreCard.value = quizManager.getScoreCard(score.value, quiz.size, elapsedTime.value)
-            resetTimer()
+            val elapsed = finalizeTimerIfNeeded()
+            _scoreCard.value = quizManager.getScoreCard(score.value, quiz.size, elapsed
+            )
+
         }
     }
-
     private fun incrementScore(
         userAnswer: Int,
         problem: MathProblem
@@ -148,14 +119,24 @@ class QuizViewModel(
         }
     }
 
-    fun onEndClick() {
-        _quizState.value = quizManager.endQuiz(_quizState.value.quizIndex)
-        stopTimer()
-        _scoreCard.value = quizManager.getScoreCard(score.value, quiz.size, elapsedTime.value)
-        resetTimer()
+    private fun finalizeTimerIfNeeded(): Duration {
+        val elapsed = if (enableTimer || _elapsedTime.value != Duration.ZERO){
+            timerManager.stopTimer()
+            val time = timerManager.elapsedTime.value
+            timerManager.resetTimer()
+            time
+        }else{
+            Duration.ZERO
+        }
+        return elapsed
+    }
+    private fun resetInput() {
+        _score.value = 0
+        _answer.value = ""
+        _inputError.value = ""
     }
 
-    //Setter
+    //Setters
     fun setAnswer(value: String) {
         _answer.value = value
     }

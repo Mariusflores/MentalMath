@@ -1,6 +1,5 @@
-package com.example.mentalmath.viewmodel
+package com.example.mentalmath.ui.viewmodel
 
-import com.example.mentalmath.ui.viewmodel.SettingsViewModel
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.junit.Test

@@ -18,15 +18,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.mentalmath.logic.generators.MathProblemGenerator
 import com.example.mentalmath.ui.components.ButtonRow
 import com.example.mentalmath.ui.components.FeedbackDisplay
 import com.example.mentalmath.ui.components.InputBox
 import com.example.mentalmath.ui.components.ProblemDisplay
-import com.example.mentalmath.ui.theme.MentalMathTheme
 import com.example.mentalmath.ui.viewmodel.QuizViewModel
 import kotlin.time.Duration
 

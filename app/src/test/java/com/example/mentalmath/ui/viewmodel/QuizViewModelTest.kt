@@ -1,8 +1,7 @@
-package com.example.mentalmath.viewmodel
+package com.example.mentalmath.ui.viewmodel
 
 import com.example.mentalmath.logic.models.Operator
 import com.example.mentalmath.logic.models.QuizConfiguration
-import com.example.mentalmath.ui.viewmodel.QuizViewModel
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +13,6 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import kotlin.time.Duration
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class QuizViewModelTest {
@@ -24,13 +22,14 @@ class QuizViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
     }
+
     @After
-    fun tearDown(){
+    fun tearDown() {
         Dispatchers.resetMain()
-}
+    }
 
     @Test
-    fun setAnswer_updatesState(){
+    fun setAnswer_updatesState() = runTest{
         val quizViewModel = QuizViewModel(dispatcher = testDispatcher, enableTimer = false)
         val input = "7"
 
@@ -38,6 +37,7 @@ class QuizViewModelTest {
 
         assertEquals(input, quizViewModel.answer.value)
     }
+
     @Test
     fun startQuiz_setDefaultStates() = runTest{
         val quizViewModel = QuizViewModel(dispatcher = testDispatcher, enableTimer = false)
@@ -61,23 +61,7 @@ class QuizViewModelTest {
     }
 
     @Test
-    fun resetTimer_resetStateValues(){
-
-        val quizViewModel = QuizViewModel(dispatcher = testDispatcher)
-        val operatorStringList: List<String> = listOf("+", "×", "÷")
-        val quizLength = "6"
-        val difficulty = "Hard"
-        val quizConfiguration = QuizConfiguration(difficulty, quizLength, operatorStringList)
-
-        quizViewModel.startQuiz(quizConfiguration)
-
-        quizViewModel.resetTimer()
-
-        assertEquals(quizViewModel.elapsedTime.value, Duration.ZERO)
-    }
-
-    @Test
-    fun onSubmitClick_setInvalidInputOnNullValue(){
+    fun onSubmitClick_setInvalidInputOnNullValue() = runTest{
         val quizViewModel = QuizViewModel(dispatcher = testDispatcher, enableTimer = false)
         val operatorStringList: List<String> = listOf("+", "×", "÷")
         val quizLength = "6"
@@ -94,7 +78,7 @@ class QuizViewModelTest {
     }
 
     @Test
-    fun onSubmitClick_IncrementScore(){
+    fun onSubmitClick_IncrementScore() = runTest {
         val quizViewModel = QuizViewModel(dispatcher = testDispatcher, enableTimer = false)
         val operatorStringList: List<String> = listOf("+")
         val quizLength = "2"
@@ -112,9 +96,8 @@ class QuizViewModelTest {
     }
 
     @Test
-    fun onEndClick_stopTimerResetTimerEndQuizAndUpdateScoreCard(){
-
-        val quizViewModel = QuizViewModel(dispatcher = testDispatcher)
+    fun onEndClick_updateStatesOnEnd() = runTest{
+        val quizViewModel = QuizViewModel(dispatcher = testDispatcher, enableTimer = false)
         val operatorStringList: List<String> = listOf("+")
         val quizLength = "6"
         val difficulty = "Easy"
@@ -124,14 +107,12 @@ class QuizViewModelTest {
 
         quizViewModel.onEndClick()
 
-        assertEquals(0, quizViewModel.score.value )
+        assertEquals(0, quizViewModel.score.value)
 
         assertEquals(0, quizViewModel.quizIndex)
-
         assertTrue(quizViewModel.isQuizFinished)
-
         assertEquals(0, quizViewModel.scoreCard.value.score)
         assertEquals(6, quizViewModel.scoreCard.value.quizLength)
-    }
 
+    }
 }

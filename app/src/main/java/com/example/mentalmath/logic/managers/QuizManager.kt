@@ -8,7 +8,11 @@ import com.example.mentalmath.logic.models.QuizState
 import com.example.mentalmath.logic.models.ScoreCard
 import kotlin.time.Duration
 
+private const val INVALID_INPUT = "Please enter a valid number."
+
 class QuizManager {
+
+
 
     fun checkAnswer(inputAnswer: Int, answer: Int ): Boolean{
 
@@ -48,6 +52,10 @@ class QuizManager {
 
     fun resetAnswer(): String{
         return ""
+    }
+
+    fun returnInvalidInputString(): String{
+         return INVALID_INPUT
     }
 
     fun getQuizByDifficulty(
