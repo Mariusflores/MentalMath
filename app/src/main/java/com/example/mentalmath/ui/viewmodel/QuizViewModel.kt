@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.mentalmath.logic.managers.QuizManager
 import com.example.mentalmath.logic.models.MathProblem
 import com.example.mentalmath.logic.models.QuizConfiguration
@@ -26,10 +25,13 @@ import kotlin.time.TimeSource
 private const val INVALID_INPUT = "Please enter a valid number."
 
 class QuizViewModel(
-    private val dispatcher: CoroutineDispatcher = Dispatchers.Main
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Main,
+    private val enableTimer: Boolean = true
 ) : ViewModel() {
 
     private val quizManager: QuizManager = QuizManager()
+    private val timerScope = CoroutineScope(dispatcher + SupervisorJob())
+
 
     // Private mutable variables
     private val _quiz: MutableState<List<MathProblem>> = mutableStateOf(emptyList())
@@ -68,8 +70,9 @@ class QuizViewModel(
     val elapsedTime: State<Duration> get() = _elapsedTime
 
 
+
     fun startQuiz(quizConfiguration: QuizConfiguration) {
-        startTimer()
+        if(enableTimer) startTimer()
         _quiz.value = quizManager.getQuizByDifficulty(quizConfiguration.difficulty, quizConfiguration.operators, quizConfiguration.quizLength)
         _quizState.value = QuizState(0, false)
         _score.value = 0
@@ -83,12 +86,17 @@ class QuizViewModel(
         isTimerRunning = true
         startMark = TimeSource.Monotonic.markNow()
 
-        viewModelScope.launch(dispatcher) {
+        timerScope.launch(dispatcher){
             while (isTimerRunning) {
                 _elapsedTime.value = accumulated + startMark.elapsedNow()
                 delay(50)
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        timerScope.cancel()
     }
 
     private fun stopTimer() {
@@ -112,20 +120,32 @@ class QuizViewModel(
         // Make sure current problem is not null
         val problem = currentProblem ?: return
 
+        incrementScore(userAnswer, problem)
+
+        _quizState.value = quizManager.progressQuiz(quizIndex, quiz.size)
+        _answer.value = quizManager.resetAnswer()
+
+        endOnQuizFinished()
+    }
+
+    private fun endOnQuizFinished() {
+        if (quizManager.verifyQuizFinished(_quizState.value)) {
+            stopTimer()
+            _scoreCard.value = quizManager.getScoreCard(score.value, quiz.size, elapsedTime.value)
+            resetTimer()
+        }
+    }
+
+    private fun incrementScore(
+        userAnswer: Int,
+        problem: MathProblem
+    ) {
         if (quizManager.checkAnswer(userAnswer, problem.correctAnswer)) {
             _score.value++; lastAnswerCorrect = true
         } else {
             lastAnswerCorrect = false
 
         }
-        _quizState.value = quizManager.progressQuiz(quizIndex, quiz.size)
-        _answer.value = quizManager.resetAnswer()
-        if (quizManager.verifyQuizFinished(_quizState.value)) {
-            stopTimer()
-            _scoreCard.value = quizManager.getScoreCard(score.value, quiz.size, elapsedTime.value)
-            resetTimer()
-        }
-
     }
 
     fun onEndClick() {
@@ -133,14 +153,6 @@ class QuizViewModel(
         stopTimer()
         _scoreCard.value = quizManager.getScoreCard(score.value, quiz.size, elapsedTime.value)
         resetTimer()
-    }
-
-    fun setDifficulty(selectedDifficulty: String) {
-        _difficulty.value = selectedDifficulty
-    }
-
-    fun setQuizLength(questionCount: String) {
-        _quizLength.value = questionCount
     }
 
     //Setter

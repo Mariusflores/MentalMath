@@ -2,7 +2,6 @@ package com.example.mentalmath.logic.managers
 
 import com.example.mentalmath.logic.generators.MathProblemGenerator
 import com.example.mentalmath.logic.models.Difficulty
-import com.example.mentalmath.logic.models.MathProblem
 import com.example.mentalmath.logic.models.Operator
 import com.example.mentalmath.logic.models.QuizState
 import junit.framework.TestCase.assertEquals
@@ -46,7 +45,7 @@ class QuizManagerTest {
         val scoreCard = quizManager.getScoreCard(score, problemCount, elapsedTime)
 
         assertEquals(scoreCard.score, score)
-        assertEquals(scoreCard.problemCount, problemCount)
+        assertEquals(scoreCard.quizLength, problemCount)
         assertEquals(scoreCard.elapsedTime, elapsedTime)
         assertEquals(scoreCard.percentage, (percentage))
     }
