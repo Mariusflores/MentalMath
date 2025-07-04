@@ -4,6 +4,7 @@ import com.example.mentalmath.logic.managers.QuizFactory
 import com.example.mentalmath.logic.models.core.MathProblem
 import com.example.mentalmath.logic.models.quiz.TimerType
 import com.example.mentalmath.logic.models.gamemode.ModeConfiguration
+import com.example.mentalmath.logic.models.quiz.ProblemMode
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -12,6 +13,7 @@ class TimeAttackModeHandler: GameModeHandler {
     var index = 0
     val quizFactory: QuizFactory = QuizFactory()
     override fun startGame(modeConfiguration: ModeConfiguration): List<MathProblem> {
+        index = 0
         quiz =  quizFactory.generateQuizByGameMode(modeConfiguration)
         return quiz
     }
@@ -22,6 +24,8 @@ class TimeAttackModeHandler: GameModeHandler {
     }
 
     override fun timerType(): TimerType = TimerType.COUNTDOWN
+    override fun problemMode(): ProblemMode = ProblemMode.FINITE
+
 
     override fun timeLimit(): Duration? = 60.seconds
 

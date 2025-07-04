@@ -3,6 +3,7 @@ package com.example.mentalmath.logic.gamemodes
 import com.example.mentalmath.logic.managers.QuizFactory
 import com.example.mentalmath.logic.models.core.MathProblem
 import com.example.mentalmath.logic.models.gamemode.ModeConfiguration
+import com.example.mentalmath.logic.models.quiz.ProblemMode
 import com.example.mentalmath.logic.models.quiz.TimerType
 import kotlin.time.Duration
 
@@ -12,6 +13,7 @@ class CasualModeHandler: GameModeHandler {
     private var index = 0
 
     override fun startGame(modeConfiguration: ModeConfiguration): List<MathProblem> {
+        var index = 0
         return quizFactory.generateQuizByGameMode(modeConfiguration)
     }
 
@@ -22,6 +24,7 @@ class CasualModeHandler: GameModeHandler {
 
 
     override fun timerType(): TimerType = TimerType.STOPWATCH
+    override fun problemMode(): ProblemMode = ProblemMode.FINITE
 
     override fun timeLimit(): Duration? = null
 

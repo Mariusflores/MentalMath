@@ -11,7 +11,12 @@ import com.example.mentalmath.logic.gamemodes.GameModeHandler
 import com.example.mentalmath.logic.gamemodes.factory.GameModeHandlerFactory
 import com.example.mentalmath.logic.managers.QuizProgressionManager
 import com.example.mentalmath.logic.managers.TimerManager
+import com.example.mentalmath.logic.models.core.Difficulty
 import com.example.mentalmath.logic.models.core.MathProblem
+import com.example.mentalmath.logic.models.core.Operator
+import com.example.mentalmath.logic.models.gamemode.GameMode
+import com.example.mentalmath.logic.models.gamemode.ModeConfiguration
+import com.example.mentalmath.logic.models.quiz.ProblemMode
 import com.example.mentalmath.logic.models.quiz.TimerType
 import com.example.mentalmath.logic.models.quiz.QuizConfiguration
 import com.example.mentalmath.logic.models.quiz.QuizState
@@ -32,6 +37,8 @@ class QuizViewModel(
     private val progressionManager: QuizProgressionManager = QuizProgressionManager()
     private val timerManager: TimerManager = TimerManager(dispatcher)
     var handler: GameModeHandler? = null
+    var modeConfig: ModeConfiguration =ModeConfiguration(Difficulty.EASY, Operator.entries.toTypedArray(), 0,
+        GameMode.Casual)
 
     private val _elapsedTime = mutableStateOf(Duration.ZERO)
     val elapsedTime: State<Duration> get() = _elapsedTime
@@ -70,7 +77,7 @@ class QuizViewModel(
         get() = if (quiz.isNotEmpty() && quizIndex in quiz.indices) quiz[quizIndex] else null
 
     fun startQuiz(quizConfiguration: QuizConfiguration) {
-        val modeConfig = quizConfiguration.toModeConfiguration()
+        modeConfig = quizConfiguration.toModeConfiguration()
         handler = GameModeHandlerFactory.create(modeConfig)
 
         _quiz.value = GameModeHandlerFactory.startQuiz(handler!!, modeConfig)
@@ -100,7 +107,13 @@ class QuizViewModel(
             return
         }
         // Make sure current problem is not null
-        val problem = currentProblem ?: return
+        var problem = currentProblem ?: return
+
+        if(handler!!.problemMode() == ProblemMode.FINITE){
+            TODO()
+        }
+
+
 
         incrementScore(userAnswer, problem)
 
