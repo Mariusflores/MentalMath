@@ -51,8 +51,8 @@ fun QuizScreen(
     }
 
 
-    LaunchedEffect(viewModel.isQuizFinished) {
-        if (viewModel.isQuizFinished) {
+    LaunchedEffect(viewModel.isGameFinished) {
+        if (viewModel.isGameFinished) {
             navController.navigate("score")
         }
     }
@@ -87,7 +87,7 @@ fun QuizScreen(
 
         }
 
-        viewModel.currentProblem?.let { problem ->
+        viewModel.currentOrNextProblem?.let { problem ->
             ProblemDisplay(problem)
         }
 

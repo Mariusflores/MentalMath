@@ -1,6 +1,6 @@
 package com.example.mentalmath.logic.managers
 
-import com.example.mentalmath.logic.models.quiz.QuizState
+import com.example.mentalmath.logic.models.quiz.GameState
 import com.example.mentalmath.logic.models.quiz.ScoreCard
 import kotlin.time.Duration
 
@@ -13,36 +13,54 @@ class QuizProgressionManager {
         return inputAnswer == answer
     }
 
-    fun verifyQuizFinished(quizState: QuizState): Boolean {
-        return quizState.quizFinished
-    }
+    fun getScoreCardFromGameState(gameState: GameState, time: Duration?): ScoreCard{
+        return when (gameState){
 
-    fun getScoreCard(score: Int, problemCount : Int, elapsedTime: Duration): ScoreCard{
-        val percentage: Double = calculatePercentage(score, problemCount)
-        return ScoreCard(score, problemCount,percentage ,elapsedTime)
-    }
+            is GameState.Casual -> {
+                val safeElapsed = time ?: Duration.ZERO
+                generateCasualScoreCard(gameState, safeElapsed)
+            }
+            is GameState.Practice -> {
+                generatePracticeScoreCard(gameState)
+            }
+            is GameState.Survival -> {
+                generateSurvivalScoreCard(gameState)
+            }
+            is GameState.TimeAttack -> {
+                val safeTimeLeft = time ?: Duration.ZERO
+                generateTimeAttackScoreCard(gameState, safeTimeLeft)
 
-    private fun calculatePercentage(score: Int, problemCount: Int): Double {
-        return  (score.toDouble() / problemCount) * 100
-    }
-
-    fun progressQuiz(quizIndex: Int, quizLength: Int): QuizState{
-        var index = quizIndex
-        var quizFinished = false
-
-        if(index < quizLength - 1){
-            index++
-        }else {
-            quizFinished = true
+            }
         }
-
-        return QuizState(index, quizFinished)
     }
 
-    fun endQuiz(quizIndex: Int) : QuizState{
-
-        return QuizState(quizIndex, true)
+    private fun generateSurvivalScoreCard(gameState: GameState.Survival): ScoreCard {
+        return ScoreCard.Survival(gameState.mistakes, gameState.lives, gameState.total)
     }
+
+    private fun generateTimeAttackScoreCard(gameState: GameState.TimeAttack, timeLeft: Duration): ScoreCard {
+        val accuracy = calculateAccuracy(gameState.correct, gameState.total)
+        return ScoreCard.TimeAttack(gameState.correct, gameState.total,accuracy, timeLeft )
+    }
+
+    private fun generatePracticeScoreCard(gameState: GameState.Practice): ScoreCard {
+        val accuracy = calculateAccuracy(gameState.correct, gameState.total)
+        return ScoreCard.Practice(gameState.correct, gameState.total, gameState.maxStreak, accuracy)
+    }
+
+    private fun generateCasualScoreCard(
+        gameState: GameState.Casual,
+        elapsedTime: Duration
+    ): ScoreCard {
+        val accuracy = calculateAccuracy(gameState.correct, gameState.total)
+        return ScoreCard.Casual(gameState.correct, gameState.total, accuracy, elapsedTime)
+    }
+
+    private fun calculateAccuracy(correct: Int, total: Int): Double {
+        if (total == 0) return 0.0
+        return  (correct.toDouble() / total) * 100
+    }
+
 
     fun resetAnswer(): String{
         return ""

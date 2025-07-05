@@ -19,36 +19,5 @@ object GameModeHandlerFactory{
             GameMode.Survival -> SurvivalModeHandler()
             GameMode.Practice -> PracticeModeHandler()
         }
-
-    }
-
-    fun startQuiz(currentHandler: GameModeHandler, modeConfig: ModeConfiguration
-    ): List<MathProblem>{
-        return when (modeConfig.gameMode){
-
-            GameMode.Casual -> {
-                currentHandler.startGame(modeConfig)
-            }
-            GameMode.TimeAttack -> {
-                currentHandler.startGame(modeConfig)
-
-            }
-            GameMode.Survival -> {
-                currentHandler.startGame(modeConfig)
-
-            }
-            GameMode.Practice -> {
-                currentHandler.startGame(modeConfig)
-            }
-        }
-    }
-
-    fun getNextProblem(currentHandler: GameModeHandler, modeConfig: ModeConfiguration): MathProblem{
-        return when(modeConfig.gameMode){
-            GameMode.Casual -> currentHandler.getNextProblem(modeConfig)
-            GameMode.TimeAttack -> currentHandler.getNextProblem(modeConfig)
-            GameMode.Survival -> currentHandler.getNextProblem(modeConfig)
-            GameMode.Practice -> currentHandler.getNextProblem(modeConfig)
-        }
     }
 }

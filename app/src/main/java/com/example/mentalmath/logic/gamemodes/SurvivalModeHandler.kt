@@ -3,6 +3,7 @@ package com.example.mentalmath.logic.gamemodes
 import com.example.mentalmath.logic.managers.QuizFactory
 import com.example.mentalmath.logic.models.core.MathProblem
 import com.example.mentalmath.logic.models.gamemode.ModeConfiguration
+import com.example.mentalmath.logic.models.quiz.GameState
 import com.example.mentalmath.logic.models.quiz.ProblemMode
 import com.example.mentalmath.logic.models.quiz.TimerType
 import kotlin.time.Duration
@@ -12,6 +13,8 @@ class SurvivalModeHandler: GameModeHandler {
 
     private var mistakes = 0
     private val lives = 3
+    private var total = 0
+    private var isFinished = false
     override fun startGame(modeConfiguration: ModeConfiguration): List<MathProblem> {
         mistakes = 0;
         return quizFactory.generateQuizByGameMode(modeConfiguration)
@@ -28,9 +31,17 @@ class SurvivalModeHandler: GameModeHandler {
 
     override fun onAnswerSubmitted(wasCorrect: Boolean) {
         if(!wasCorrect) mistakes++
+        total++
+    }
+    private fun shouldEndGame(): Boolean = mistakes == lives
+
+    override fun getGameState(timeLeft: Duration?): GameState {
+        if(!isFinished) isFinished = shouldEndGame()
+
+        return GameState.Survival(mistakes, lives, total, isFinished)
     }
 
-    override fun shouldEndGame(): Boolean {
-        return mistakes == lives
+    override fun endGameEarly() {
+        isFinished = true
     }
 }

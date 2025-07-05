@@ -33,7 +33,7 @@ class TimerManagerTest {
         val timer = TimerManager(dispatcher = testDispatcher, timerScope = this)
         timer.startStopwatch()
         advanceTimeBy(150)
-        timer.stopStopwatch()
+        timer.stopTimer()
         assertTrue(timer.elapsedTime.first() > Duration.ZERO)
     }
     @Test
@@ -42,7 +42,7 @@ class TimerManagerTest {
         timer.startStopwatch()
         timer.startStopwatch()
         advanceTimeBy(100)
-        timer.stopStopwatch()
+        timer.stopTimer()
 
         val elapsed = timer.elapsedTime.first()
         val d: Duration = 200.milliseconds
@@ -94,7 +94,7 @@ class TimerManagerTest {
         val pausedTime = timer.elapsedTime.first()
         timer.startStopwatch()
         advanceTimeBy(100)
-        timer.stopStopwatch()
+        timer.stopTimer()
         val resumedTime = timer.elapsedTime.first()
 
         assertTrue(resumedTime > pausedTime)

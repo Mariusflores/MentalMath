@@ -18,31 +18,46 @@ class TimerManager(
     private val timeSource: TimeSource = TimeSource.Monotonic
 ) {
     private var isRunning = false
+
+    //Stopwatch variables
     private var startMark: TimeMark? = null
     private var accumulated = Duration.ZERO
     private val _elapsedTime = MutableStateFlow(Duration.ZERO)
     val elapsedTime: StateFlow<Duration> get() = _elapsedTime
 
-     fun startStopwatch() {
+    // Countdown variables
+    private var isCountdown = false
+    private var timeLimit = Duration.ZERO
+
+
+    fun startStopwatch() {
         if (isRunning) return
 
         isRunning = true
         startMark = timeSource.markNow()
 
-         launchStopwatchLoop()
+        launchStopwatchLoop()
     }
 
-    fun stopStopwatch() {
+    fun stopTimer() {
         if (!isRunning || startMark == null) return
-        accumulated += stopwatchElapsedSinceStart()
-        isRunning = false
+
+        if (isCountdown) {
+            isRunning = false
+        } else {
+            accumulated += stopwatchElapsedSinceStart()
+            isRunning = false
+        }
+
     }
-    fun pauseStopwatch() = stopStopwatch()
+
+    fun pauseStopwatch() = stopTimer()
     fun resetTimer() {
-        stopStopwatch()
+        stopTimer()
         accumulated = Duration.ZERO
         _elapsedTime.value = Duration.ZERO
     }
+
     fun dispose() = timerScope.cancel()
 
     private fun launchStopwatchLoop() = timerScope.launch {
@@ -51,8 +66,36 @@ class TimerManager(
             delay(50)
         }
     }
+
     private fun stopwatchElapsedSinceStart(): Duration = startMark?.elapsedNow() ?: Duration.ZERO
-    fun startCountDown() {
-        TODO("Not yet implemented")
+
+    fun startCountDown(timeLimit: Duration?) {
+        if (isRunning || timeLimit == null) return
+
+        isRunning = true
+        isCountdown = true
+        this.timeLimit = timeLimit
+        startMark = timeSource.markNow()
+
+        launchCountdownLoop()
+
     }
+
+    private fun launchCountdownLoop() = timerScope.launch {
+        while (isRunning) {
+            val elapsed = stopwatchElapsedSinceStart()
+            val remaining = timeLimit - elapsed
+
+            if (remaining <= Duration.ZERO) {
+                _elapsedTime.value = Duration.ZERO
+                isRunning = false
+                break
+            } else {
+                _elapsedTime.value = remaining
+            }
+
+            delay(50)
+        }
+    }
+
 }

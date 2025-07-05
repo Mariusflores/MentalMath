@@ -16,17 +16,16 @@ import com.example.mentalmath.logic.models.core.MathProblem
 import com.example.mentalmath.logic.models.core.Operator
 import com.example.mentalmath.logic.models.gamemode.GameMode
 import com.example.mentalmath.logic.models.gamemode.ModeConfiguration
+import com.example.mentalmath.logic.models.quiz.GameState
 import com.example.mentalmath.logic.models.quiz.ProblemMode
-import com.example.mentalmath.logic.models.quiz.TimerType
 import com.example.mentalmath.logic.models.quiz.QuizConfiguration
-import com.example.mentalmath.logic.models.quiz.QuizState
 import com.example.mentalmath.logic.models.quiz.ScoreCard
-import com.example.mentalmath.ui.components.ProblemDisplay
+import com.example.mentalmath.logic.models.quiz.TimerType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.concurrent.timer
 import kotlin.time.Duration
-
 
 
 class QuizViewModel(
@@ -37,7 +36,9 @@ class QuizViewModel(
 
     private val progressionManager: QuizProgressionManager = QuizProgressionManager()
     private val timerManager: TimerManager = TimerManager(dispatcher)
-    var handler: GameModeHandler? = null
+    private lateinit var handler: GameModeHandler
+
+
     var modeConfig: ModeConfiguration =ModeConfiguration(Difficulty.EASY, Operator.entries.toTypedArray(), 0,
         GameMode.Casual)
 
@@ -57,8 +58,10 @@ class QuizViewModel(
     private val _score = mutableStateOf(0)
     private val _answer = mutableStateOf("")
     private val _inputError = mutableStateOf("")
-    private val _quizState = mutableStateOf(QuizState(0, false))
-    private val _scoreCard = mutableStateOf(ScoreCard(0, 0, 0.0, Duration.ZERO))
+    private val _gameState = mutableStateOf<GameState?>(null)
+    private val _scoreCard: MutableState<ScoreCard> =
+        mutableStateOf(ScoreCard.Casual(0, 0, 0.0, Duration.ZERO))
+
 
     var lastAnswerCorrect by mutableStateOf<Boolean?>(null)
 
@@ -69,33 +72,109 @@ class QuizViewModel(
     val answer: State<String> get() = _answer
     val inputError: State<String> get() = _inputError
     val scoreCard: State<ScoreCard> get() = _scoreCard
+    val gameState: State<GameState?> get() = _gameState
+
 
     // No need for reactivity
-    val quizIndex: Int get() = _quizState.value.quizIndex
-    val isQuizFinished: Boolean get() = _quizState.value.quizFinished
+    val quizIndex: Int get() = when(val state = _gameState.value){
+        is GameState.Casual -> state.index
+        is GameState.TimeAttack -> state.index
+        is GameState.Survival -> state.mistakes
+        is GameState.Practice -> state.total
+        null -> 0
+    }
+    val isGameFinished: Boolean get() = when(val state = _gameState.value){
+        is GameState.Casual -> state.isFinished
+        is GameState.TimeAttack -> state.isFinished
+        is GameState.Survival -> state.isFinished
+        is GameState.Practice -> state.isFinished
+        null -> false
+    }
     val quiz: List<MathProblem> get() = _quiz.value
-    val currentProblem: MathProblem?
-        get() = if(handler!!.problemMode()== ProblemMode.FINITE){
+    val currentOrNextProblem: MathProblem?
+        get() = if(handler.problemMode()== ProblemMode.FINITE){
             if (quiz.isNotEmpty() && quizIndex in quiz.indices) quiz[quizIndex] else null
         }else{
-            handler!!.getNextProblem(modeConfig)
+            handler.getNextProblem(modeConfig)
         }
 
     fun startQuiz(quizConfiguration: QuizConfiguration) {
         modeConfig = quizConfiguration.toModeConfiguration()
         handler = GameModeHandlerFactory.create(modeConfig)
 
-        _quiz.value = GameModeHandlerFactory.startQuiz(handler!!, modeConfig)
+        _quiz.value = handler.startGame(modeConfig)
         initiateTimer()
 
-        _quizState.value = QuizState(0, false)
+        _gameState.value = handler.getGameState(null)
         resetInput()
     }
 
+
+
+    fun onSubmitClick() {
+        val userAnswer = answer.value.toIntOrNull()
+        if (userAnswer == null) {
+            _inputError.value = progressionManager.returnInvalidInputString()
+            return
+        }
+        // Make sure current problem is not null
+        val problem = currentOrNextProblem ?: return
+
+
+        incrementScoreIfNeeded(userAnswer, problem)
+
+        _gameState.value = handler.getGameState()
+        _answer.value = progressionManager.resetAnswer()
+
+        endOnQuizFinished()
+    }
+    fun onEndClick() {
+        handler.endGameEarly()
+        _gameState.value = handler.getGameState()
+        fetchResults()
+    }
+
+    fun fetchResults(){
+        val elapsed = finalizeTimerIfNeeded()
+
+        val safeGameState: GameState = gameState.value ?: GameState.Casual(0,0,0,false)
+        _scoreCard.value = progressionManager.getScoreCardFromGameState(safeGameState, elapsed)
+    }
+
+    private fun endOnQuizFinished() {
+        if(isGameFinished){
+            fetchResults()
+        }
+    }
+    private fun incrementScoreIfNeeded(
+        userAnswer: Int,
+        problem: MathProblem
+    ) {
+       val answerCorrect = progressionManager.checkAnswer(userAnswer, problem.correctAnswer)
+        handler.onAnswerSubmitted(answerCorrect)
+        when(modeConfig.gameMode){
+            GameMode.Casual, GameMode.TimeAttack -> {
+                if (answerCorrect) {
+                    _score.value++; lastAnswerCorrect = true
+                } else {
+                    lastAnswerCorrect = false
+
+                }
+            }
+            GameMode.Survival, GameMode.Practice -> {
+                lastAnswerCorrect = if (answerCorrect) {
+                    true
+                } else {
+                    false
+
+                }
+            }
+        }
+    }
     private fun initiateTimer() {
-        when (handler!!.timerType()) {
-            TimerType.STOPWATCH -> timerManager.startStopwatch()
-            TimerType.COUNTDOWN -> timerManager.startCountDown()
+        when (handler.timerType()) {
+            TimerType.STOPWATCH -> if(enableTimer)timerManager.startStopwatch()
+            TimerType.COUNTDOWN -> if (enableTimer)timerManager.startCountDown(handler.timeLimit())
             TimerType.NONE -> {}
         }
     }
@@ -105,64 +184,29 @@ class QuizViewModel(
         timerManager.dispose()
     }
 
-    fun onSubmitClick() {
-        val userAnswer = answer.value.toIntOrNull()
-        if (userAnswer == null) {
-            _inputError.value = progressionManager.returnInvalidInputString()
-            return
-        }
-        // Make sure current problem is not null
-        var problem = currentProblem ?: return
-
-        if(handler!!.problemMode() == ProblemMode.FINITE){
-            TODO()
-        }
-
-
-
-        incrementScore(userAnswer, problem)
-
-        _quizState.value = progressionManager.progressQuiz(quizIndex, quiz.size)
-        _answer.value = progressionManager.resetAnswer()
-
-        endOnQuizFinished()
-    }
-    fun onEndClick() {
-        _quizState.value = progressionManager.endQuiz(_quizState.value.quizIndex)
-        val elapsed = finalizeTimerIfNeeded()
-        _scoreCard.value = progressionManager.getScoreCard(score.value, quiz.size, elapsed)
-    }
-
-    private fun endOnQuizFinished() {
-        if (progressionManager.verifyQuizFinished(_quizState.value)) {
-            val elapsed = finalizeTimerIfNeeded()
-            _scoreCard.value = progressionManager.getScoreCard(score.value, quiz.size, elapsed
-            )
-
-        }
-    }
-    private fun incrementScore(
-        userAnswer: Int,
-        problem: MathProblem
-    ) {
-        if (progressionManager.checkAnswer(userAnswer, problem.correctAnswer)) {
-            _score.value++; lastAnswerCorrect = true
-        } else {
-            lastAnswerCorrect = false
-
-        }
-    }
-
     private fun finalizeTimerIfNeeded(): Duration {
-        val elapsed = if (enableTimer || _elapsedTime.value != Duration.ZERO){
-            timerManager.stopStopwatch()
-            val time = timerManager.elapsedTime.value
-            timerManager.resetTimer()
-            time
-        }else{
-            Duration.ZERO
+        val elapsed =  when (handler.timerType()) {
+            TimerType.STOPWATCH -> {
+                if (_elapsedTime.value != Duration.ZERO){
+                    timerManager.stopTimer()
+                    val time = timerManager.elapsedTime.value
+                    timerManager.resetTimer()
+                    time
+                }else{
+                    Duration.ZERO
+                }
+            }
+            TimerType.COUNTDOWN -> {
+                timerManager.stopTimer()
+                val time = timerManager.elapsedTime.value
+                timerManager.resetTimer()
+                time
+            }
+            TimerType.NONE -> {
+                Duration.ZERO
+            }
         }
-        return elapsed
+            return elapsed
     }
     private fun resetInput() {
         _score.value = 0
