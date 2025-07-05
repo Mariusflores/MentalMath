@@ -35,7 +35,9 @@ class QuizProgressionManager {
     }
 
     private fun generateSurvivalScoreCard(gameState: GameState.Survival): ScoreCard {
-        return ScoreCard.Survival(gameState.mistakes, gameState.lives, gameState.total)
+        val correct = gameState.total - gameState.mistakes
+        val accuracy = calculateAccuracy(correct, gameState.total)
+        return ScoreCard.Survival(gameState.mistakes, gameState.lives, gameState.total, accuracy)
     }
 
     private fun generateTimeAttackScoreCard(gameState: GameState.TimeAttack, timeLeft: Duration): ScoreCard {

@@ -33,10 +33,10 @@ fun ScoreScreen(
         return "%02d:%02d".format(minutes, seconds)
     }
 
-    val scoreCard = viewModel.scoreCard.value
-    val scoreString = "You scored ${scoreCard.score} / ${scoreCard.quizLength} "
-    val percentageString = " ${scoreCard.percentage}%"
-    val elapsedString = "Time Elapsed: ${formatTime(scoreCard.elapsedTime)}"
+
+    val scoreString = "You scored ${viewModel.scoreCardCorrect} / ${viewModel.scoreCardTotal} "
+    val percentageString = " ${viewModel.scoreCardAccuracy}%"
+    val elapsedString = "Time Elapsed: ${formatTime(viewModel.scoreCardTime)}"
 
 
 

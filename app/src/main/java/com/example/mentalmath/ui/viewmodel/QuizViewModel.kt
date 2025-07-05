@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mentalmath.logic.gamemodes.GameModeHandler
 import com.example.mentalmath.logic.gamemodes.factory.GameModeHandlerFactory
+import com.example.mentalmath.logic.gamemodes.factory.ScoreCardParser
 import com.example.mentalmath.logic.managers.QuizProgressionManager
 import com.example.mentalmath.logic.managers.TimerManager
 import com.example.mentalmath.logic.models.core.Difficulty
@@ -24,7 +25,6 @@ import com.example.mentalmath.logic.models.quiz.TimerType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.concurrent.timer
 import kotlin.time.Duration
 
 
@@ -71,7 +71,11 @@ class QuizViewModel(
     val score: State<Int> get() = _score
     val answer: State<String> get() = _answer
     val inputError: State<String> get() = _inputError
-    val scoreCard: State<ScoreCard> get() = _scoreCard
+
+    val scoreCardCorrect: Int = ScoreCardParser.getCorrectProperty(_scoreCard.value)
+    val scoreCardTotal: Int = ScoreCardParser.getTotalProperty(_scoreCard.value)
+    val scoreCardTime: Duration = ScoreCardParser.getTimeElapsedOrRemaining(_scoreCard.value)
+    val scoreCardAccuracy: Double = ScoreCardParser.getAccuracyProperty(_scoreCard.value)
     val gameState: State<GameState?> get() = _gameState
 
 

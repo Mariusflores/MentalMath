@@ -5,7 +5,6 @@ import com.example.mentalmath.logic.models.core.MathProblem
 import com.example.mentalmath.logic.models.gamemode.ModeConfiguration
 import com.example.mentalmath.logic.models.quiz.GameState
 import com.example.mentalmath.logic.models.quiz.ProblemMode
-import com.example.mentalmath.logic.models.quiz.QuizState
 import com.example.mentalmath.logic.models.quiz.TimerType
 import kotlin.time.Duration
 

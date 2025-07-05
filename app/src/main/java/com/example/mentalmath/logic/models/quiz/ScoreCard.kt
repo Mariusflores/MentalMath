@@ -18,7 +18,8 @@ sealed class ScoreCard {
     data class Survival(
         val mistakes: Int,
         val lives: Int,
-        val total: Int
+        val total: Int,
+        val accuracy: Double
     ): ScoreCard()
     data class Practice(
         val correct: Int,
