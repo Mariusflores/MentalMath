@@ -12,7 +12,7 @@ class SurvivalModeHandler: GameModeHandler {
     private val quizFactory: QuizFactory = QuizFactory()
 
     private var mistakes = 0
-    private val lives = 3
+    private val lives = lives()
     private var total = 0
     private var isFinished = false
 
@@ -27,6 +27,8 @@ class SurvivalModeHandler: GameModeHandler {
 
     override fun timerType(): TimerType = TimerType.NONE
     override fun problemMode(): ProblemMode = ProblemMode.INFINITE
+
+    private fun lives(): Int = 3
 
     override fun timeLimit(): Duration? = null
 

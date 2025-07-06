@@ -2,7 +2,6 @@ package com.example.mentalmath.logic.models.gamemode
 
 import com.example.mentalmath.logic.models.core.Difficulty
 import com.example.mentalmath.logic.models.core.Operator
-import kotlin.time.Duration
 
 data class ModeConfiguration(
     val difficulty: Difficulty,
