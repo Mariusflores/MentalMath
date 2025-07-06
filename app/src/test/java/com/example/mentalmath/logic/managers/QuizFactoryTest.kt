@@ -22,7 +22,7 @@ class QuizFactoryTest {
 
 
         var quiz = quizFactory.generateQuizByGameMode(modeConfig)
-        assertEquals(quiz.size, length.toInt())
+        assertEquals(quiz.size, length)
         assertTrue(quiz.all { it.operator in allowedOperators })
 
         val operatorList = listOf("×", "÷")
