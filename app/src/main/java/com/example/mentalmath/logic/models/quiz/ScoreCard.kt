@@ -24,7 +24,7 @@ sealed class ScoreCard {
     data class Practice(
         val correct: Int,
         val total: Int,
-        val streak: Int,
+        val maxStreak: Int,
         val accuracy: Double
     ): ScoreCard()
 }

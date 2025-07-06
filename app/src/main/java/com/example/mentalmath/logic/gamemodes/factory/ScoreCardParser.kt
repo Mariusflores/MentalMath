@@ -1,6 +1,5 @@
 package com.example.mentalmath.logic.gamemodes.factory
 
-import com.example.mentalmath.logic.managers.QuizProgressionManager
 import com.example.mentalmath.logic.models.quiz.ScoreCard
 import kotlin.time.Duration
 
@@ -38,23 +37,23 @@ object ScoreCardParser {
             else -> error("Game mode does not use timer")
         }
     }
-    fun getMistakes(scoreCard: ScoreCard): Int{
+    fun getMistakesProperty(scoreCard: ScoreCard): Int{
         return when(val card = scoreCard){
             is ScoreCard.Survival -> card.mistakes
             else -> error("Game mode does not track mistakes")
         }
     }
 
-    fun getLives(scoreCard: ScoreCard): Int{
+    fun getLivesProperty(scoreCard: ScoreCard): Int{
         return when(val card = scoreCard){
             is ScoreCard.Survival -> card.lives
             else -> error("Game mode does not support lives")
         }
     }
 
-    fun getStreak(scoreCard: ScoreCard): Int{
+    fun getStreakProperty(scoreCard: ScoreCard): Int{
         return when(val card = scoreCard){
-            is ScoreCard.Practice -> card.streak
+            is ScoreCard.Practice -> card.maxStreak
             else -> error("Game mode does not support lives")
         }
     }

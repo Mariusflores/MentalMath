@@ -7,13 +7,7 @@ import kotlin.time.Duration
 private const val INVALID_INPUT = "Please enter a valid number."
 
 class QuizProgressionManager {
-
-    fun checkAnswer(inputAnswer: Int, answer: Int ): Boolean{
-
-        return inputAnswer == answer
-    }
-
-    fun getScoreCardFromGameState(gameState: GameState, time: Duration?): ScoreCard{
+    fun getScoreCardFromGameState(gameState: GameState, time: Duration? = null): ScoreCard{
         return when (gameState){
 
             is GameState.Casual -> {
@@ -32,6 +26,16 @@ class QuizProgressionManager {
 
             }
         }
+    }
+    fun resetAnswer(): String{
+        return ""
+    }
+    fun returnInvalidInputString(): String{
+        return INVALID_INPUT
+    }
+    fun checkAnswer(inputAnswer: Int, answer: Int ): Boolean{
+
+        return inputAnswer == answer
     }
 
     private fun generateSurvivalScoreCard(gameState: GameState.Survival): ScoreCard {
@@ -61,14 +65,5 @@ class QuizProgressionManager {
     private fun calculateAccuracy(correct: Int, total: Int): Double {
         if (total == 0) return 0.0
         return  (correct.toDouble() / total) * 100
-    }
-
-
-    fun resetAnswer(): String{
-        return ""
-    }
-
-    fun returnInvalidInputString(): String{
-        return INVALID_INPUT
     }
 }
