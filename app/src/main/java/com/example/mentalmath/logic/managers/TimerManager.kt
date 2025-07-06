@@ -7,6 +7,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.TimeMark
@@ -42,13 +43,14 @@ class TimerManager(
     fun stopTimer() {
         if (!isRunning || startMark == null) return
 
+        val elapsed = stopwatchElapsedSinceStart()
         if (isCountdown) {
-            isRunning = false
+            timeLimit -= elapsed
         } else {
-            accumulated += stopwatchElapsedSinceStart()
-            isRunning = false
-        }
+            accumulated += elapsed
 
+        }
+        isRunning = false
     }
 
     fun pauseStopwatch() = stopTimer()
@@ -72,6 +74,7 @@ class TimerManager(
     fun startCountDown(timeLimit: Duration?) {
         if (isRunning || timeLimit == null) return
 
+
         isRunning = true
         isCountdown = true
         this.timeLimit = timeLimit
@@ -79,6 +82,15 @@ class TimerManager(
 
         launchCountdownLoop()
 
+    }
+
+     fun resumeCountdown(){
+        if(timeLimit == Duration.ZERO || !isCountdown) return
+
+        isRunning = true
+        startMark = timeSource.markNow()
+
+         launchCountdownLoop()
     }
 
     private fun launchCountdownLoop() = timerScope.launch {

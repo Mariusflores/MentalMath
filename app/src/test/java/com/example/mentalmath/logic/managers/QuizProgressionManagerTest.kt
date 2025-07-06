@@ -1,6 +1,6 @@
 package com.example.mentalmath.logic.managers
 
-import com.example.mentalmath.logic.gamemodes.factory.ScoreCardParser
+import com.example.mentalmath.logic.utils.ScoreCardParser
 import com.example.mentalmath.logic.generators.MathProblemGenerator
 import com.example.mentalmath.logic.models.core.Difficulty
 import com.example.mentalmath.logic.models.core.Operator
