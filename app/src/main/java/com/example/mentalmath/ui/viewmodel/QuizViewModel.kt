@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mentalmath.logic.gamemodes.GameModeHandler
 import com.example.mentalmath.logic.gamemodes.factory.GameModeHandlerFactory
-import com.example.mentalmath.logic.gamemodes.factory.ScoreCardParser
+import com.example.mentalmath.logic.utils.ScoreCardParser
 import com.example.mentalmath.logic.managers.QuizProgressionManager
 import com.example.mentalmath.logic.managers.TimerManager
 import com.example.mentalmath.logic.models.core.Difficulty

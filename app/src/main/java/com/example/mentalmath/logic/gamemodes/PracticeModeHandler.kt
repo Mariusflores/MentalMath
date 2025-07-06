@@ -9,16 +9,16 @@ import com.example.mentalmath.logic.models.quiz.ProblemMode
 import kotlin.time.Duration
 
 class PracticeModeHandler: GameModeHandler {
-    var total = 0
-    var correct = 0
-    var isFinished = false
+    private val quizFactory: QuizFactory = QuizFactory()
 
-    var currentStreak = 0
-    var highestStreak = 0
+    private var total = 0
+    private var correct = 0
+    private var isFinished = false
+    private var currentStreak = 0
+    private var highestStreak = 0
 
-    val quizFactory: QuizFactory = QuizFactory()
     override fun startGame(modeConfiguration: ModeConfiguration): List<MathProblem> {
-        total = 0; correct = 0
+        total = 0; correct = 0; isFinished = false; currentStreak = 0; highestStreak = 0
         return quizFactory.generateQuizByGameMode(modeConfiguration)
     }
 

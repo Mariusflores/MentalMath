@@ -9,14 +9,15 @@ import com.example.mentalmath.logic.models.quiz.TimerType
 import kotlin.time.Duration
 
 class SurvivalModeHandler: GameModeHandler {
-    val quizFactory: QuizFactory = QuizFactory()
+    private val quizFactory: QuizFactory = QuizFactory()
 
     private var mistakes = 0
     private val lives = 3
     private var total = 0
     private var isFinished = false
+
     override fun startGame(modeConfiguration: ModeConfiguration): List<MathProblem> {
-        mistakes = 0
+        mistakes = 0; total = 0; isFinished = false;
         return quizFactory.generateQuizByGameMode(modeConfiguration)
     }
 

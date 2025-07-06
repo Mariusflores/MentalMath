@@ -1,4 +1,4 @@
-package com.example.mentalmath.logic.gamemodes.factory
+package com.example.mentalmath.logic.utils
 
 import com.example.mentalmath.logic.models.quiz.ScoreCard
 import kotlin.time.Duration
@@ -30,7 +30,7 @@ object ScoreCardParser {
         }
     }
 
-    fun getTimeElapsedOrRemaining(scoreCard: ScoreCard): Duration{
+    fun getTimeElapsedOrRemaining(scoreCard: ScoreCard): Duration {
         return when(val card = scoreCard){
             is ScoreCard.Casual -> card.time
             is ScoreCard.TimeAttack -> card.timeLeft

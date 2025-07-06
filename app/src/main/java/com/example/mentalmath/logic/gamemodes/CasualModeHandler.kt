@@ -9,15 +9,16 @@ import com.example.mentalmath.logic.models.quiz.TimerType
 import kotlin.time.Duration
 
 class CasualModeHandler: GameModeHandler {
-    val quizFactory: QuizFactory = QuizFactory()
+    private val quizFactory: QuizFactory = QuizFactory()
     private var quiz: List<MathProblem> = emptyList()
     private var index = 0
     private var score = 0
     private var isFinished = false
 
     override fun startGame(modeConfiguration: ModeConfiguration): List<MathProblem> {
-        index = 0
-        return quizFactory.generateQuizByGameMode(modeConfiguration)
+        index = 0; score = 0; isFinished = false
+        quiz = quizFactory.generateQuizByGameMode(modeConfiguration)
+        return quiz
     }
     // For Semantics - Not to be used
     override fun getNextProblem(modeConfiguration: ModeConfiguration): MathProblem {

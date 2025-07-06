@@ -6,7 +6,7 @@ import com.example.mentalmath.logic.models.core.Operator
 data class ModeConfiguration(
     val difficulty: Difficulty,
     val operators: Array<Operator>,
-    val quizLength: Int? = 0,
+    val length: Int? = 0,
     val gameMode: GameMode
 ) {
     override fun equals(other: Any?): Boolean {
@@ -15,7 +15,7 @@ data class ModeConfiguration(
 
         other as ModeConfiguration
 
-        if (quizLength != other.quizLength) return false
+        if (length != other.length) return false
         if (difficulty != other.difficulty) return false
         if (!operators.contentEquals(other.operators)) return false
         if (gameMode != other.gameMode) return false
@@ -24,7 +24,7 @@ data class ModeConfiguration(
     }
 
     override fun hashCode(): Int {
-        var result = quizLength ?: 0
+        var result = length ?: 0
         result = 31 * result + difficulty.hashCode()
         result = 31 * result + operators.contentHashCode()
         result = 31 * result + gameMode.hashCode()

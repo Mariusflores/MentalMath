@@ -2,7 +2,9 @@ package com.example.mentalmath.logic.models.quiz
 
 import kotlin.time.Duration
 
-sealed class GameState {
+sealed class GameState(
+
+) {
     data class Casual (
         val index: Int,
         val total: Int,

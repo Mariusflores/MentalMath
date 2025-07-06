@@ -10,17 +10,17 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class TimeAttackModeHandler: GameModeHandler {
-    var quiz: List<MathProblem> = emptyList()
-    var index = 0
-    var score = 0
-    var isFinished = false
+    private var quiz: List<MathProblem> = emptyList()
+    private var index = 0
+    private var score = 0
+    private var isFinished = false
+    private var timeLeft = Duration.ZERO
     val quizFactory: QuizFactory = QuizFactory()
     override fun startGame(modeConfiguration: ModeConfiguration): List<MathProblem> {
-        index = 0
+        index = 0; score = 0; isFinished = false
         quiz =  quizFactory.generateQuizByGameMode(modeConfiguration)
         return quiz
     }
-
     // For Semantics - Not to be used
     override fun getNextProblem(modeConfiguration: ModeConfiguration): MathProblem {
         return quiz[index++]
@@ -29,23 +29,23 @@ class TimeAttackModeHandler: GameModeHandler {
     override fun timerType(): TimerType = TimerType.COUNTDOWN
     override fun problemMode(): ProblemMode = ProblemMode.FINITE
 
-
     override fun timeLimit(): Duration? = 60.seconds
 
     override fun onAnswerSubmitted(wasCorrect: Boolean) {
         if(wasCorrect) score++
         index++
     }
-
-    private fun shouldEndGame(): Boolean =  index > quiz.size - 1
+    private fun shouldEndGame(): Boolean =  (index > quiz.size - 1) || timeLeft == Duration.ZERO
 
 
     override fun getGameState(timeLeft: Duration?): GameState {
+        this.timeLeft = timeLeft!!
         if(!isFinished) isFinished = shouldEndGame()
-        return GameState.TimeAttack(index, quiz.size, score, isFinished, timeLeft)
+        return GameState.TimeAttack(index, quiz.size, score, isFinished, this.timeLeft)
     }
 
     override fun endGameEarly() {
         isFinished = true
     }
+
 }
