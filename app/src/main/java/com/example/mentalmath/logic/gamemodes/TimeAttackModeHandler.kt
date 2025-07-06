@@ -10,12 +10,14 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class TimeAttackModeHandler: GameModeHandler {
+
+    val quizFactory: QuizFactory = QuizFactory()
     private var quiz: List<MathProblem> = emptyList()
     private var index = 0
     private var score = 0
     private var isFinished = false
     private var timeLeft = Duration.ZERO
-    val quizFactory: QuizFactory = QuizFactory()
+
     override fun startGame(modeConfiguration: ModeConfiguration): List<MathProblem> {
         index = 0; score = 0; isFinished = false
         quiz =  quizFactory.generateQuizByGameMode(modeConfiguration)

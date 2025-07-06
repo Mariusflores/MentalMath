@@ -34,7 +34,7 @@ class CasualModeHandlerTest {
         val modeConfig = ModeConfiguration(Difficulty.EASY, Operator.entries.toTypedArray(),
             length, GameMode.Casual)
 
-        var quiz = handler.startGame(modeConfig)
+        val quiz = handler.startGame(modeConfig)
 
         repeat(5){
             handler.onAnswerSubmitted(true)
@@ -50,10 +50,8 @@ class CasualModeHandlerTest {
         assertEquals(length, total, "Total questions should be 10")
         assertEquals(total, quiz.size)
 
-        gameState = handler.getGameState()
 
-
-        quiz = handler.startGame(modeConfig)
+        handler.startGame(modeConfig)
         gameState = handler.getGameState()
 
         correct = GameStateParser.getCorrectProperty(gameState)
@@ -70,12 +68,12 @@ class CasualModeHandlerTest {
         val modeConfig = ModeConfiguration(Difficulty.EASY, Operator.entries.toTypedArray(),
             length, GameMode.Casual)
 
-        val quiz = handler.startGame(modeConfig)
+        handler.startGame(modeConfig)
 
         var gameState = handler.getGameState()
 
         var isFinished = GameStateParser.getIsFinishedProperty(gameState)
-        assertEquals(false, isFinished, "isFinished should be set to true")
+        assertEquals(false, isFinished, "isFinished should initially be false")
 
 
         handler.endGameEarly()
@@ -96,16 +94,16 @@ class CasualModeHandlerTest {
         val modeConfig = ModeConfiguration(Difficulty.EASY, Operator.entries.toTypedArray(),
             length, GameMode.Casual)
 
-        var quiz = handler.startGame(modeConfig)
+        handler.startGame(modeConfig)
 
         handler.endGameEarly()
 
         var gameState = handler.getGameState()
 
         var isFinished = GameStateParser.getIsFinishedProperty(gameState)
-        assertEquals(false, isFinished, "isFinished should be set to true")
+        assertEquals(true, isFinished, "isFinished should be set to true")
 
-        quiz = handler.startGame(modeConfig)
+        handler.startGame(modeConfig)
 
         gameState = handler.getGameState()
 
@@ -122,13 +120,13 @@ class CasualModeHandlerTest {
         val modeConfig = ModeConfiguration(Difficulty.EASY, Operator.entries.toTypedArray(),
             length, GameMode.Casual)
 
-        val quiz = handler.startGame(modeConfig)
+        handler.startGame(modeConfig)
 
         repeat(length){
             handler.onAnswerSubmitted(true)
         }
 
-        val gameState = handler.getGameState();
+        val gameState = handler.getGameState()
 
         val isFinished = GameStateParser.getIsFinishedProperty(gameState)
         assertEquals(true, isFinished)
@@ -141,18 +139,29 @@ class CasualModeHandlerTest {
         val modeConfig = ModeConfiguration(Difficulty.EASY, Operator.entries.toTypedArray(),
             length, GameMode.Casual)
 
-        val quiz = handler.startGame(modeConfig)
+        handler.startGame(modeConfig)
 
         repeat(length){
             handler.onAnswerSubmitted(false)
         }
 
-        val gameState = handler.getGameState();
+        val gameState = handler.getGameState()
 
         val correct = GameStateParser.getCorrectProperty(gameState)
         val index = GameStateParser.getIndexProperty(gameState)
         assertEquals(0, correct)
         assertEquals(length, index)
     }
+    @Test
+    fun zeroLengthQuiz_shouldFinishImmediately() {
+        val handler = CasualModeHandler()
+        val config = ModeConfiguration(Difficulty.EASY, Operator.entries.toTypedArray(), 0, GameMode.Casual)
+
+        handler.startGame(config)
+        val gameState = handler.getGameState()
+
+        assertEquals(true, GameStateParser.getIsFinishedProperty(gameState), "Zero-length quiz should be immediately finished")
+    }
+
 
 }

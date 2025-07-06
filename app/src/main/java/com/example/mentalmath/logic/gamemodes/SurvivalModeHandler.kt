@@ -17,7 +17,7 @@ class SurvivalModeHandler: GameModeHandler {
     private var isFinished = false
 
     override fun startGame(modeConfiguration: ModeConfiguration): List<MathProblem> {
-        mistakes = 0; total = 0; isFinished = false;
+        mistakes = 0; total = 0; isFinished = false
         return quizFactory.generateQuizByGameMode(modeConfiguration)
     }
 
