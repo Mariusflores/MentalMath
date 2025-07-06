@@ -2,12 +2,13 @@ package com.example.mentalmath.logic.models.gamemode
 
 import com.example.mentalmath.logic.models.core.Difficulty
 import com.example.mentalmath.logic.models.core.Operator
+import kotlin.time.Duration
 
 data class ModeConfiguration(
     val difficulty: Difficulty,
     val operators: Array<Operator>,
     val length: Int? = 0,
-    val gameMode: GameMode
+    val gameMode: GameMode,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

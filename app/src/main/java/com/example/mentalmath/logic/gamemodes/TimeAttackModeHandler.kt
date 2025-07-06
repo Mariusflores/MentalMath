@@ -16,10 +16,10 @@ class TimeAttackModeHandler: GameModeHandler {
     private var index = 0
     private var score = 0
     private var isFinished = false
-    private var timeLeft = Duration.ZERO
+    private var timeLeft = timeLimit()
 
     override fun startGame(modeConfiguration: ModeConfiguration): List<MathProblem> {
-        index = 0; score = 0; isFinished = false
+        index = 0; score = 0; isFinished = false; timeLeft = timeLimit()
         quiz =  quizFactory.generateQuizByGameMode(modeConfiguration)
         return quiz
     }
@@ -41,7 +41,7 @@ class TimeAttackModeHandler: GameModeHandler {
 
 
     override fun getGameState(timeLeft: Duration?): GameState {
-        this.timeLeft = timeLeft!!
+        if(timeLeft != null) this.timeLeft = timeLeft
         if(!isFinished) isFinished = shouldEndGame()
         return GameState.TimeAttack(index, quiz.size, score, isFinished, this.timeLeft)
     }
