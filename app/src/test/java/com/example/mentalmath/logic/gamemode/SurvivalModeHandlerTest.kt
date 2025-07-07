@@ -52,9 +52,11 @@ class SurvivalModeHandlerTest {
 
         var total = GameStateParser.getTotalProperty(gameState)
         var mistakes = GameStateParser.getMistakesProperty(gameState)
+        val lives = GameStateParser.getLivesProperty(gameState)
 
         assertEquals(5, total, "Total: $total should be 5")
         assertEquals(2, mistakes, "Mistakes: $mistakes should be 2")
+        assertEquals(handler.lives(), lives, "Mistakes: $lives should be ${handler.lives()}")
 
         handler.startGame(config)
 
