@@ -19,7 +19,9 @@ class TimeAttackModeHandlerTest {
         difficulty, Operator.entries.toTypedArray(), null,
         GameMode.TimeAttack
     )
-
+    /**
+     * General Test Cases
+     * */
     @Test
     fun startGame_ShouldReturnQuiz() {
         val gameHandler = TimeAttackModeHandler()
@@ -117,25 +119,6 @@ class TimeAttackModeHandlerTest {
             isFinished
         )
     }
-
-    @Test
-    fun onCountdownZero_shouldSetFinishedTrue() {
-        val gameHandler = TimeAttackModeHandler()
-
-        val modeConfig = config(Difficulty.EASY)
-
-        gameHandler.startGame(modeConfig)
-
-        val gameState = gameHandler.getGameState(0.milliseconds)
-
-        val isFinished = GameStateParser.getIsFinishedProperty(gameState)
-
-        assertTrue(
-            "Should set finished on timeLeft Zero",
-            isFinished
-        )
-    }
-
     @Test
     fun startGame_afterEnd_resetsStateCorrectly() {
 
@@ -170,7 +153,7 @@ class TimeAttackModeHandlerTest {
     }
 
     @Test
-    fun shouldNotIncrementCorrectOnIncorrectAnswer() {
+    fun onIncorrectAnswer_shouldNotIncrement() {
         val handler = TimeAttackModeHandler()
         val modeConfig = config(Difficulty.EASY)
 
@@ -233,6 +216,26 @@ class TimeAttackModeHandlerTest {
 
         assertEquals(10, index)
         assertEquals(5, correct)
+    }
+    /**
+     * Mode Unique Test Cases
+     * */
+    @Test
+    fun onCountdownZero_shouldSetFinishedTrue() {
+        val gameHandler = TimeAttackModeHandler()
+
+        val modeConfig = config(Difficulty.EASY)
+
+        gameHandler.startGame(modeConfig)
+
+        val gameState = gameHandler.getGameState(0.milliseconds)
+
+        val isFinished = GameStateParser.getIsFinishedProperty(gameState)
+
+        assertTrue(
+            "Should set finished on timeLeft Zero",
+            isFinished
+        )
     }
 
     @Test

@@ -19,7 +19,9 @@ class SurvivalModeHandlerTest {
     private fun config(operators: Array<Operator>) =
         ModeConfiguration(Difficulty.EASY, operators, null, GameMode.Survival)
 
-
+    /**
+     * General Test Cases
+     * */
     @Test
     fun startGame_returnsEmptyList() {
         val handler = SurvivalModeHandler()
@@ -92,6 +94,26 @@ class SurvivalModeHandlerTest {
     }
 
     @Test
+    fun getNextProblem_checkOperatorsInArray() {
+        val handler = SurvivalModeHandler()
+        val allowedOperators = Operator.OperatorConverter.toOperatorArray(listOf("+", "-"))
+        val config = config(allowedOperators)
+
+        handler.startGame(config)
+
+        repeat(100) {
+            val problem = handler.getNextProblem(config)
+            assertTrue(
+                "Problems with operators outside of given array should not be returned",
+                problem.operator in allowedOperators)
+        }
+    }
+
+    /**
+     * Mode Unique Test Cases
+     * */
+
+    @Test
     fun onMistakesEqualLives_setFinishedTrue() {
         val handler = SurvivalModeHandler()
         val config = config()
@@ -119,20 +141,6 @@ class SurvivalModeHandlerTest {
             "isFinished should be true on running out of lives",
             isFinished
         )
-    }
-
-    @Test
-    fun getNextProblem_checkOperatorsInArray() {
-        val handler = SurvivalModeHandler()
-        val allowedOperators = Operator.OperatorConverter.toOperatorArray(listOf("+", "-"))
-        val config = config(allowedOperators)
-
-        handler.startGame(config)
-
-        repeat(100) {
-            val problem = handler.getNextProblem(config)
-            assertTrue(problem.operator in allowedOperators)
-        }
     }
 
     @Test

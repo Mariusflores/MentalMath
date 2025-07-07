@@ -16,6 +16,9 @@ class CasualModeHandlerTest {
     private fun config(length: Int) = ModeConfiguration(Difficulty.EASY, Operator.entries.toTypedArray(), length,
         GameMode.Casual)
 
+    /**
+     * General Test Cases
+     * */
     @Test
     fun startGame_ShouldReturnQuiz(){
         val gameHandler = CasualModeHandler()
@@ -92,7 +95,7 @@ class CasualModeHandlerTest {
     }
 
     @Test
-    fun shouldSetIsFinished(){
+    fun onFinishingQuiz_shouldSetIsFinished(){
         val handler = CasualModeHandler()
         val length = 10
         val modeConfig = config(length)
@@ -144,7 +147,7 @@ class CasualModeHandlerTest {
     }
 
     @Test
-    fun shouldNotIncrementCorrectOnIncorrectAnswer(){
+    fun onIncorrectAnswer_shouldNotIncrement(){
         val handler = CasualModeHandler()
         val length = 10
         val modeConfig = config(length)
@@ -162,6 +165,56 @@ class CasualModeHandlerTest {
         assertEquals(0, correct)
         assertEquals(length, index)
     }
+    @Test
+    fun partialProgress_shouldNotSetFinished() {
+        val handler = CasualModeHandler()
+        val length = 10
+        val modeConfig = config(length)
+
+        handler.startGame(modeConfig)
+
+        repeat((length / 2)) {
+            handler.onAnswerSubmitted(true)
+        }
+
+        val gameState = handler.getGameState()
+
+        val isFinished = GameStateParser.getIsFinishedProperty(gameState)
+        val index = GameStateParser.getIndexProperty(gameState)
+        val correct = GameStateParser.getCorrectProperty(gameState)
+
+        assertFalse(
+            "Game should not be finished after partial progress",
+            isFinished
+        )
+        assertEquals((length / 2), index)
+        assertEquals((length / 2), correct)
+    }
+    @Test
+    fun mixCorrectIncorrect_updatesStateCorrectly() {
+        val handler = CasualModeHandler()
+        val length = 10
+        val modeConfig = config(length)
+
+        handler.startGame(modeConfig)
+
+        repeat((length / 2)) {
+            handler.onAnswerSubmitted(true)
+            handler.onAnswerSubmitted(false)
+        }
+        val gameState = handler.getGameState()
+
+
+        val index = GameStateParser.getIndexProperty(gameState)
+        val correct = GameStateParser.getCorrectProperty(gameState)
+
+
+        assertEquals(length, index)
+        assertEquals((length / 2), correct)
+    }
+    /**
+     * Mode Unique Test Cases
+     * */
     @Test
     fun zeroLengthQuiz_shouldFinishImmediately() {
         val handler = CasualModeHandler()
