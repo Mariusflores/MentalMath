@@ -5,7 +5,6 @@ import com.example.mentalmath.logic.models.core.Operator
 import com.example.mentalmath.logic.models.gamemode.GameMode
 import com.example.mentalmath.logic.models.gamemode.ModeConfiguration
 import com.example.mentalmath.logic.utils.GameStateParser
-import com.example.mentalmath.logic.utils.ScoreCardParser
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
@@ -21,17 +20,11 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class QuizViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
-    private fun config() =
-        ModeConfiguration(
-            Difficulty.EASY, Operator.entries.toTypedArray(), 10,
-            GameMode.Casual
-        )
 
     private fun config(
         difficulty: Difficulty,
