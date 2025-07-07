@@ -8,7 +8,7 @@ import com.example.mentalmath.logic.models.quiz.ProblemMode
 import com.example.mentalmath.logic.models.quiz.TimerType
 import kotlin.time.Duration
 
-class SurvivalModeHandler: GameModeHandler {
+class SurvivalModeHandler : GameModeHandler {
     private val quizFactory: QuizFactory = QuizFactory()
 
     private var mistakes = 0
@@ -28,18 +28,19 @@ class SurvivalModeHandler: GameModeHandler {
     override fun timerType(): TimerType = TimerType.NONE
     override fun problemMode(): ProblemMode = ProblemMode.INFINITE
 
-    private fun lives(): Int = 3
+    fun lives(): Int = 3
 
     override fun timeLimit(): Duration? = null
 
     override fun onAnswerSubmitted(wasCorrect: Boolean) {
-        if(!wasCorrect) mistakes++
+        if (!wasCorrect) mistakes++
         total++
     }
+
     private fun shouldEndGame(): Boolean = mistakes == lives
 
     override fun getGameState(timeLeft: Duration?): GameState {
-        if(!isFinished) isFinished = shouldEndGame()
+        if (!isFinished) isFinished = shouldEndGame()
 
         return GameState.Survival(mistakes, lives, total, isFinished)
     }

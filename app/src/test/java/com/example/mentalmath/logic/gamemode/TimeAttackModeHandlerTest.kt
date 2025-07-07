@@ -15,11 +15,13 @@ import kotlin.time.Duration.Companion.seconds
 
 class TimeAttackModeHandlerTest {
 
-    private fun config(difficulty: Difficulty) = ModeConfiguration(difficulty, Operator.entries.toTypedArray(), null,
-        GameMode.TimeAttack)
+    private fun config(difficulty: Difficulty) = ModeConfiguration(
+        difficulty, Operator.entries.toTypedArray(), null,
+        GameMode.TimeAttack
+    )
 
     @Test
-    fun startGame_ShouldReturnQuiz(){
+    fun startGame_ShouldReturnQuiz() {
         val gameHandler = TimeAttackModeHandler()
 
         val modeConfig = config(Difficulty.EASY)
@@ -27,16 +29,19 @@ class TimeAttackModeHandlerTest {
         val quiz = gameHandler.startGame(modeConfig)
 
         assertTrue(quiz.isNotEmpty())
+        assertTrue(quiz.all { it.operator in modeConfig.operators })
+
     }
+
     @Test
-    fun startGame_ShouldResetVariables(){
+    fun startGame_ShouldResetVariables() {
         val gameHandler = TimeAttackModeHandler()
 
         val modeConfig = config(Difficulty.MEDIUM)
 
         gameHandler.startGame(modeConfig)
 
-        repeat(5){
+        repeat(5) {
             gameHandler.onAnswerSubmitted(true)
         }
 
@@ -48,10 +53,10 @@ class TimeAttackModeHandlerTest {
         val timeLeft = GameStateParser.getTimeLeftProperty(gameState)
 
         assertEquals(5, index, "Index:$index should be 5")
-        assertEquals(5,correct, "Correct:$correct should be 5")
+        assertEquals(5, correct, "Correct:$correct should be 5")
         //Difficulty.MEDIUM has constant length of 15 in TimeAttack
         assertEquals(15, total, "Total:$total should be 15")
-        assertEquals(15.seconds, timeLeft, "Time left:$timeLeft should be 15s" )
+        assertEquals(15.seconds, timeLeft, "Time left:$timeLeft should be 15s")
 
         gameHandler.startGame(modeConfig)
 
@@ -61,13 +66,13 @@ class TimeAttackModeHandlerTest {
         correct = GameStateParser.getCorrectProperty(gameState)
 
         assertEquals(0, index, "Index:$index should be 0 by default")
-        assertEquals(0,correct, "Correct:$correct should be 0 by default")
-        assertEquals(15.seconds, timeLeft, "Time left:$timeLeft should be 60s by default" )
+        assertEquals(0, correct, "Correct:$correct should be 0 by default")
+        assertEquals(15.seconds, timeLeft, "Time left:$timeLeft should be 60s by default")
 
     }
 
     @Test
-    fun endGameEarly_shouldSetFinishedTrue(){
+    fun endGameEarly_shouldSetFinishedTrue() {
         val gameHandler = TimeAttackModeHandler()
 
         val modeConfig = config(Difficulty.EASY)
@@ -78,7 +83,8 @@ class TimeAttackModeHandlerTest {
         var isFinished = GameStateParser.getIsFinishedProperty(gameState)
         assertFalse(
             "IsFinished:$isFinished should be false by default",
-            isFinished)
+            isFinished
+        )
 
         gameHandler.endGameEarly()
 
@@ -87,17 +93,19 @@ class TimeAttackModeHandlerTest {
         isFinished = GameStateParser.getIsFinishedProperty(gameState)
         assertTrue(
             "IsFinished:$isFinished should be set true on end game early",
-            isFinished)
+            isFinished
+        )
     }
+
     @Test
-    fun onFinishingQuiz_shouldSetFinishedTrue(){
+    fun onFinishingQuiz_shouldSetFinishedTrue() {
         val gameHandler = TimeAttackModeHandler()
 
         val modeConfig = config(Difficulty.EASY)
 
         gameHandler.startGame(modeConfig)
 
-        repeat(10){
+        repeat(10) {
             gameHandler.onAnswerSubmitted(true)
         }
 
@@ -106,11 +114,12 @@ class TimeAttackModeHandlerTest {
 
         assertTrue(
             "Should set true on finishing quiz",
-            isFinished)
+            isFinished
+        )
     }
 
     @Test
-    fun onCountdownZero_shouldSetFinishedTrue(){
+    fun onCountdownZero_shouldSetFinishedTrue() {
         val gameHandler = TimeAttackModeHandler()
 
         val modeConfig = config(Difficulty.EASY)
@@ -123,17 +132,19 @@ class TimeAttackModeHandlerTest {
 
         assertTrue(
             "Should set finished on timeLeft Zero",
-            isFinished)
+            isFinished
+        )
     }
+
     @Test
-    fun startGame_afterEnd_resetsStateCorrectly(){
+    fun startGame_afterEnd_resetsStateCorrectly() {
 
         val handler = TimeAttackModeHandler()
         val modeConfig = config(Difficulty.HARD)
 
         handler.startGame(modeConfig)
         // Hard mode default length = 20
-        repeat(20){
+        repeat(20) {
             handler.onAnswerSubmitted(true)
         }
 
@@ -142,7 +153,8 @@ class TimeAttackModeHandlerTest {
         var isFinished = GameStateParser.getIsFinishedProperty(gameState)
         assertTrue(
             "isFinished should be set to true",
-            isFinished)
+            isFinished
+        )
 
         handler.startGame(modeConfig)
 
@@ -153,16 +165,18 @@ class TimeAttackModeHandlerTest {
 
         assertFalse(
             "isFinished should be reset to false",
-            isFinished)
+            isFinished
+        )
     }
+
     @Test
-    fun shouldNotIncrementCorrectOnIncorrectAnswer(){
+    fun shouldNotIncrementCorrectOnIncorrectAnswer() {
         val handler = TimeAttackModeHandler()
         val modeConfig = config(Difficulty.EASY)
 
         handler.startGame(modeConfig)
 
-        repeat(10){
+        repeat(10) {
             handler.onAnswerSubmitted(false)
         }
 
@@ -173,6 +187,7 @@ class TimeAttackModeHandlerTest {
         assertEquals(0, correct)
         assertEquals(10, index)
     }
+
     @Test
     fun partialProgress_shouldNotSetFinished() {
         val handler = TimeAttackModeHandler()
@@ -192,10 +207,12 @@ class TimeAttackModeHandlerTest {
 
         assertFalse(
             "Game should not be finished after partial progress",
-            isFinished)
+            isFinished
+        )
         assertEquals(5, index)
         assertEquals(5, correct)
     }
+
     @Test
     fun mixCorrectIncorrect_updatesStateCorrectly() {
         val handler = TimeAttackModeHandler()
@@ -219,7 +236,7 @@ class TimeAttackModeHandlerTest {
     }
 
     @Test
-    fun getGameState_nullValue(){
+    fun getGameState_nullValue() {
         val handler = TimeAttackModeHandler()
         val modeConfig = config(Difficulty.EASY)
 
@@ -236,7 +253,6 @@ class TimeAttackModeHandlerTest {
 
         assertEquals(20.seconds, timeLeft, "Null should not have broken the time left state")
     }
-
 
 
 }
