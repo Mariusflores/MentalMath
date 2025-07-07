@@ -35,8 +35,9 @@ class PracticeModeHandler: GameModeHandler {
         if(wasCorrect) {
             correct++; currentStreak++
         }else{
-            if(currentStreak > highestStreak) highestStreak = currentStreak
+            currentStreak = 0
         }
+        if(currentStreak > highestStreak) highestStreak = currentStreak
         total++
     }
     private fun shouldEndGame(): Boolean =  false
