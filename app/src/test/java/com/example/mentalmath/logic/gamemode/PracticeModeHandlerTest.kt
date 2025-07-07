@@ -52,7 +52,7 @@ class PracticeModeHandlerTest {
         var maxStreak = GameStateParser.getMaxStreakProperty(gameState)
 
         assertEquals(3, total, "Total: $total should be 3")
-        assertEquals(3, total, "correct: $correct should be 3")
+        assertEquals(3, correct, "correct: $correct should be 3")
         assertEquals(3, currentStreak, "Streak: $currentStreak should be 3")
         assertEquals(3, maxStreak, "HighestStreak: $maxStreak should be 3")
 
@@ -188,6 +188,27 @@ class PracticeModeHandlerTest {
             6, maxStreak,
             "Max streak should be 6"
         )
-
     }
+
+    @Test
+    fun alternatingAnswers_shouldTrackCorrectlyAndResetStreak() {
+        val handler = PracticeModeHandler()
+        val config = config()
+        handler.startGame(config)
+
+        repeat(5) {
+            handler.onAnswerSubmitted(true)
+            handler.onAnswerSubmitted(false)
+        }
+
+        val state = handler.getGameState()
+        val correct = GameStateParser.getCorrectProperty(state)
+        val streak = GameStateParser.getStreakProperty(state)
+        val maxStreak = GameStateParser.getMaxStreakProperty(state)
+
+        assertEquals(5, correct, "Should have 5 correct answers")
+        assertEquals(0, streak, "Final streak should be 0 after last incorrect answer")
+        assertEquals(1, maxStreak, "Max streak should be 1 due to alternation")
+    }
+
 }
