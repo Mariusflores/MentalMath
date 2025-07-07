@@ -4,6 +4,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.mentalmath.logic.models.core.Difficulty
+import com.example.mentalmath.logic.models.core.Operator
+import com.example.mentalmath.logic.models.gamemode.GameMode
+import com.example.mentalmath.logic.models.gamemode.ModeConfiguration
 
 private const val DIFFICULTY_DEFAULT = "Easy"
 
@@ -33,6 +37,15 @@ class SettingsViewModel : ViewModel() {
         _operators.value = _operators.value.toMutableList().apply {
             if (contains(operator)) remove(operator) else add(operator)
         }
+    }
+    fun getModeConfiguration(gameMode: GameMode): ModeConfiguration{
+        return ModeConfiguration(
+            difficulty = Difficulty.DifficultyConverter.toDifficulty(difficulty.value),
+            operators = Operator.OperatorConverter.toOperatorArray(operators.value),
+            length = quizLength.value.toIntOrNull(),
+            gameMode = gameMode
+
+        )
     }
 
 }

@@ -26,7 +26,7 @@ object GameStateParser {
             is GameState.Casual -> state.correct
             is GameState.TimeAttack -> state.correct
             is GameState.Practice -> state.correct
-            else ->  0
+            is GameState.Survival -> state.total - state.mistakes
         }
     }
     fun getIsFinishedProperty(gameState: GameState): Boolean{

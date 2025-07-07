@@ -9,6 +9,7 @@ data class ModeConfiguration(
     val length: Int? = 0,
     val gameMode: GameMode,
 ) {
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

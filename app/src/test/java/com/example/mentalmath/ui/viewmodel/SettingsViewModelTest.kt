@@ -40,10 +40,6 @@ class SettingsViewModelTest {
         settingsViewModel.toggleOperator(operator)
 
         assertTrue(operatorList.all { it in settingsViewModel.operators.value })
-
-
-
-
-
     }
+
 }
