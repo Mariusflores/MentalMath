@@ -16,8 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mentalmath.logic.models.gamemode.GameMode
-import com.example.mentalmath.logic.models.quiz.GameState
-import com.example.mentalmath.ui.components.SelectionScreen.GameModeCard
 import com.example.mentalmath.ui.viewmodel.QuizViewModel
 import kotlin.time.Duration
 
@@ -39,8 +37,11 @@ fun ScoreScreen(
 
     val scoreString = "You scored ${viewModel.scoreCardCorrect} / ${viewModel.scoreCardTotal} "
     val percentageString = " ${viewModel.scoreCardAccuracy}%"
-    var elapsedString = ""
-    if(viewModel.gameMode == GameMode.Casual || viewModel.gameMode ==  GameMode.TimeAttack) elapsedString = "Time Elapsed: ${formatTime(viewModel.scoreCardTime)}"
+    val elapsedString = when(viewModel.gameMode){
+        is GameMode.Casual ->  "Time Elapsed: ${formatTime(viewModel.scoreCardTime)}"
+        is GameMode.TimeAttack ->  "Time Elapsed: ${formatTime(viewModel.scoreCardTime)}"
+        else -> ""
+    }
 
 
 

@@ -41,10 +41,12 @@ fun SurvivalModeCorner(
     }
 
     Row {
-        for (i in 1..getLives()) Icon(
-            imageVector = Icons.Filled.Favorite,
-            contentDescription = "Favorite"
-        )
+        (1..getLives()).forEach { i ->
+            Icon(
+                imageVector = Icons.Filled.Favorite,
+                contentDescription = "Favorite"
+            )
+        }
     }
 }
 

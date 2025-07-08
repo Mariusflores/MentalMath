@@ -36,7 +36,7 @@ fun GameModeCard(
     onSelect: (GameMode) -> Unit
 ) {
 
-    var isChecked = selectedGameMode == gameMode
+    val isChecked = selectedGameMode == gameMode
 
     @Composable
     fun iconByGameMode(): ImageVector{

@@ -11,7 +11,6 @@ import com.example.mentalmath.logic.models.gamemode.ModeConfiguration
 
 private const val DIFFICULTY_DEFAULT = "Easy"
 
-private const val QUIZ_LENGTH_DEFAULT = "10"
 private val QUIZ_OPERATORS_DEFAULT = listOf("+", "-", "×", "÷")
 
 
