@@ -57,8 +57,11 @@ class QuizViewModel(
             timerManager.elapsedTime.collect { time ->
                 _elapsedTime.value = time
 
-                if(handler.timerType() == TimerType.COUNTDOWN){
-                    _gameState.value = handler.getGameState(elapsedTime.value)
+                if (::handler.isInitialized) {
+                    if (handler.timerType() == TimerType.COUNTDOWN) {
+                        _gameState.value = handler.getGameState(elapsedTime.value)
+
+                    }
                 }
             }
         }
@@ -76,7 +79,6 @@ class QuizViewModel(
     var lastAnswerCorrect by mutableStateOf(true)
 
 
-
     //Public read-only variables
     //State for compose reactivity
     val answer: State<String> get() = _answer
@@ -85,8 +87,8 @@ class QuizViewModel(
     val gameStateIndex: Int get() = GameStateParser.getIndexProperty(gameState)
     val isGameFinished: Boolean get() = GameStateParser.getIsFinishedProperty(gameState)
 
-    val survivalLives: Int get () = GameStateParser.getLivesProperty(gameState)
-    val survivalMistakes: Int get () = GameStateParser.getMistakesProperty(gameState)
+    val survivalLives: Int get() = GameStateParser.getLivesProperty(gameState)
+    val survivalMistakes: Int get() = GameStateParser.getMistakesProperty(gameState)
 
 
     // No need for reactivity
