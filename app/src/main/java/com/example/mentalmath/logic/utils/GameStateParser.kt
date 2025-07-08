@@ -9,7 +9,8 @@ object GameStateParser {
         return when (val state = gameState) {
             is GameState.Casual -> state.index
             is GameState.TimeAttack -> state.index
-            else ->  0
+            is GameState.Survival -> state.total
+            is GameState.Practice -> state.total
         }
     }
 

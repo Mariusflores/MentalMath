@@ -133,6 +133,7 @@ class QuizViewModel(
     }
 
     fun onEndClick() {
+        if (isGameFinished) return
         handler.endGameEarly()
         _gameState.value = handler.getGameState()
         fetchResults()
