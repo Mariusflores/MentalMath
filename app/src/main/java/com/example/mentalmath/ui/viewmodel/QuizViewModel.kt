@@ -159,7 +159,6 @@ class QuizViewModel(
         problem: MathProblem
     ) {
         val answerCorrect = progressionManager.checkAnswer(userAnswer, problem.correctAnswer)
-        println("answer correct: $answerCorrect")
         submitToHandler(answerCorrect)
         lastAnswerCorrect = answerCorrect
     }
