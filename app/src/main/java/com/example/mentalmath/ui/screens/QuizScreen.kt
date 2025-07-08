@@ -33,7 +33,7 @@ fun QuizScreen(
 
 ) {
 
-    val progress = (viewModel.gameStateIndex + 1).toFloat() / (viewModel.quiz.size + 1)
+    val progress = (viewModel.gameStateIndex + 1).toFloat() / (viewModel.gameStateTotal + 1)
     val color = when (viewModel.lastAnswerCorrect) {
 
         true -> Color.Green

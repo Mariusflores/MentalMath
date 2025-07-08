@@ -86,6 +86,7 @@ class QuizViewModel(
     val currentProblem: State<MathProblem?> get() = requireNotNull(_currentProblem)
 
     val gameStateIndex: Int get() = GameStateParser.getIndexProperty(gameState)
+    val gameStateTotal: Int get() = GameStateParser.getTotalProperty(gameState)
     val isGameFinished: Boolean get() = GameStateParser.getIsFinishedProperty(gameState)
 
     val survivalLives: Int get() = GameStateParser.getLivesProperty(gameState)
