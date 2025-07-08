@@ -1,4 +1,4 @@
-package com.example.mentalmath.ui.components
+package com.example.mentalmath.ui.components.QuizScreen
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding

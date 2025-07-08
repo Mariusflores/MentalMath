@@ -1,4 +1,4 @@
-package com.example.mentalmath.ui.components
+package com.example.mentalmath.ui.components.QuizScreen
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.OutlinedTextField
