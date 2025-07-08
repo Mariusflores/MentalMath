@@ -65,7 +65,8 @@ class QuizViewModel(
         mutableStateOf(ScoreCard.Casual(0, 0, 0.0, Duration.ZERO))
 
     private var lastProblem: MathProblem? = null
-    var lastAnswerCorrect by mutableStateOf<Boolean>(true)
+    var lastAnswerCorrect by mutableStateOf(true)
+
 
 
     //Public read-only variables
@@ -75,6 +76,9 @@ class QuizViewModel(
 
     val gameStateIndex: Int get() = GameStateParser.getIndexProperty(gameState)
     val isGameFinished: Boolean get() = GameStateParser.getIsFinishedProperty(gameState)
+
+    val survivalLives: Int get () = GameStateParser.getLivesProperty(gameState)
+    val survivalMistakes: Int get () = GameStateParser.getMistakesProperty(gameState)
 
 
     // No need for reactivity
@@ -86,6 +90,7 @@ class QuizViewModel(
     val quiz: List<MathProblem> get() = _quiz.value
 
     val gameState get() = requireNotNull(_gameState.value)
+    val gameMode get() = modeConfig.gameMode
 
 
     val currentOrNextProblem: MathProblem?
@@ -103,6 +108,7 @@ class QuizViewModel(
         lastAnswerCorrect = true
         modeConfig = modeConfiguration
         handler = GameModeHandlerFactory.create(modeConfig)
+
 
         _quiz.value = handler.startGame(modeConfig)
         initiateTimer()
