@@ -67,9 +67,10 @@ fun QuizScreen(
 
         }
 
-        viewModel.currentOrNextProblem?.let { problem ->
-            ProblemDisplay(problem)
-        }
+
+        ProblemDisplay(requireNotNull(viewModel.currentProblem.value))
+
+
 
 
         InputBox(

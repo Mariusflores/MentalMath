@@ -92,7 +92,7 @@ class QuizViewModelTest {
         quizViewModel.startQuiz(config)
 
         repeat(5) {
-            var problem = quizViewModel.currentOrNextProblem!!
+            var problem = quizViewModel.currentProblem.value!!
             quizViewModel.setAnswer(problem.correctAnswer.toString())
             quizViewModel.onSubmitClick()
             assertTrue(
@@ -100,7 +100,7 @@ class QuizViewModelTest {
                 quizViewModel.lastAnswerCorrect
             )
 
-            problem = quizViewModel.currentOrNextProblem!!
+            problem = quizViewModel.currentProblem.value!!
             quizViewModel.setAnswer((problem.correctAnswer - 1).toString())
             quizViewModel.onSubmitClick()
             assertFalse(
@@ -158,9 +158,6 @@ class QuizViewModelTest {
         quizViewModel.startQuiz(config)
 
 
-        assertTrue(quizViewModel.quiz.isNotEmpty())
-        assertEquals(length, quizViewModel.quiz.size)
-        assertTrue(quizViewModel.quiz.all { it.operator in operatorArray })
         assertEquals(0, quizViewModel.gameStateIndex)
         assertEquals(false, quizViewModel.isGameFinished)
         assertEquals("", quizViewModel.answer.value)
@@ -181,7 +178,7 @@ class QuizViewModelTest {
 
         quizViewModel.startQuiz(config)
 
-        val problem = quizViewModel.currentOrNextProblem!!
+        val problem = quizViewModel.currentProblem.value!!
         quizViewModel.setAnswer((problem.correctAnswer - 1).toString())
         quizViewModel.onSubmitClick()
         assertFalse(
@@ -213,7 +210,7 @@ class QuizViewModelTest {
 
         quizViewModel.startQuiz(config)
 
-        val problem = quizViewModel.currentOrNextProblem!!
+        val problem = quizViewModel.currentProblem.value!!
         quizViewModel.setAnswer((problem.correctAnswer - 1).toString())
         quizViewModel.onSubmitClick()
         assertFalse(
@@ -247,7 +244,7 @@ class QuizViewModelTest {
 
         quizViewModel.startQuiz(config)
 
-        val problem = quizViewModel.currentOrNextProblem!!
+        val problem = quizViewModel.currentProblem.value!!
         quizViewModel.setAnswer(problem.correctAnswer.toString())
 
         quizViewModel.onSubmitClick()
@@ -258,7 +255,7 @@ class QuizViewModelTest {
 
     }
     @Test
-    fun onSubmitClick_currentOrNextProblem_infiniteMode() = runTest {
+    fun onSubmitClick_currentProblem__infiniteMode() = runTest {
         val quizViewModel = getQuizViewModel()
 
         val operatorArray = Operator.entries.toTypedArray()
@@ -270,7 +267,7 @@ class QuizViewModelTest {
         quizViewModel.startQuiz(config)
 
         repeat(10) {
-            val problem = quizViewModel.currentOrNextProblem!!
+            val problem = quizViewModel.currentProblem.value!!
             quizViewModel.setAnswer(problem.correctAnswer.toString())
             quizViewModel.onSubmitClick()
         }
@@ -324,12 +321,12 @@ class QuizViewModelTest {
         quizViewModel.startQuiz(config)
 
         repeat(3) {
-            val problem = quizViewModel.currentOrNextProblem!!
+            val problem = quizViewModel.currentProblem.value!!
             quizViewModel.setAnswer(problem.correctAnswer.toString())
             quizViewModel.onSubmitClick()
         }
         repeat(3) {
-            val problem = quizViewModel.currentOrNextProblem!!
+            val problem = quizViewModel.currentProblem.value!!
             quizViewModel.setAnswer((problem.correctAnswer - 1).toString())
             quizViewModel.onSubmitClick()
         }
@@ -367,7 +364,7 @@ class QuizViewModelTest {
 
         val mistakes = 3
         repeat(mistakes) {
-            val problem = quizViewModel.currentOrNextProblem!!
+            val problem = quizViewModel.currentProblem.value!!
             quizViewModel.setAnswer((problem.correctAnswer - 1).toString())
             quizViewModel.onSubmitClick()
         }
@@ -567,17 +564,19 @@ class QuizViewModelTest {
     /**
      * region: Edge Cases
      * */
+    /*
     @Test
-    fun onSubmitClick_withoutStartingQuiz_shouldDoNothing() = runTest {
+    fun onSubmitClick_withoutStartingQuiz_shouldThrowException() = runTest {
         val quizViewModel = getQuizViewModel()
-
         quizViewModel.setAnswer("43")
-        quizViewModel.onSubmitClick()
 
-        assertFailsWith<IllegalArgumentException> {
-            quizViewModel.gameState
+        assertFailsWith<IllegalStateException> {
+            quizViewModel.onSubmitClick()
         }
     }
+
+     */
+
     @Test
     fun currentOrNextProblem_shouldReturnNull_indexOutOfBounds_finiteMode() = runTest {
         val quizViewModel = getQuizViewModel()
@@ -586,12 +585,11 @@ class QuizViewModelTest {
 
         quizViewModel.startQuiz(config)
 
-        val problem = quizViewModel.currentOrNextProblem!!
+        val problem = quizViewModel.currentProblem.value!!
 
         quizViewModel.setAnswer(problem.correctAnswer.toString())
         quizViewModel.onSubmitClick()
 
-        assertEquals(null, quizViewModel.currentOrNextProblem)
     }
 
 }

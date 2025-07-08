@@ -22,7 +22,7 @@ class CasualModeHandler: GameModeHandler {
     }
     // For Semantics - Not to be used
     override fun getNextProblem(modeConfiguration: ModeConfiguration): MathProblem {
-        return quiz[index++]
+        return quiz[index]
     }
 
     override fun timerType(): TimerType = TimerType.STOPWATCH

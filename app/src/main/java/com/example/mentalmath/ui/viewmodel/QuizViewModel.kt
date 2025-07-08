@@ -68,14 +68,13 @@ class QuizViewModel(
     }
 
     // Private mutable variables
-    private val _quiz: MutableState<List<MathProblem>> = mutableStateOf(emptyList())
     private val _answer = mutableStateOf("")
     private val _inputError = mutableStateOf("")
     private val _gameState = mutableStateOf<GameState?>(null)
     private val _scoreCard: MutableState<ScoreCard> =
         mutableStateOf(ScoreCard.Casual(0, 0, 0.0, Duration.ZERO))
 
-    private var lastProblem: MathProblem? = null
+    private var _currentProblem: MutableState<MathProblem?>  = mutableStateOf(null)
     var lastAnswerCorrect by mutableStateOf(true)
 
 
@@ -83,6 +82,8 @@ class QuizViewModel(
     //State for compose reactivity
     val answer: State<String> get() = _answer
     val inputError: State<String> get() = _inputError
+
+    val currentProblem: State<MathProblem?> get() = requireNotNull(_currentProblem)
 
     val gameStateIndex: Int get() = GameStateParser.getIndexProperty(gameState)
     val isGameFinished: Boolean get() = GameStateParser.getIsFinishedProperty(gameState)
@@ -97,30 +98,19 @@ class QuizViewModel(
     val scoreCardTime: Duration get() = ScoreCardParser.getTimeElapsedOrRemaining(_scoreCard.value)
     val scoreCardAccuracy: Double get() = ScoreCardParser.getAccuracyProperty(_scoreCard.value)
 
-    val quiz: List<MathProblem> get() = _quiz.value
-
     val gameState get() = requireNotNull(_gameState.value)
     val gameMode get() = modeConfig.gameMode
 
 
-    val currentOrNextProblem: MathProblem?
-        get() = if (handler.problemMode() == ProblemMode.FINITE) {
-            if (quiz.isNotEmpty() && gameStateIndex in quiz.indices) {
-                lastProblem = quiz[gameStateIndex]
-                lastProblem
-            } else null
-        } else {
-            lastProblem = handler.getNextProblem(modeConfig)
-            lastProblem
-        }
 
     fun startQuiz(modeConfiguration: ModeConfiguration) {
         lastAnswerCorrect = true
         modeConfig = modeConfiguration
         handler = GameModeHandlerFactory.create(modeConfig)
 
+        handler.startGame(modeConfig)
+        _currentProblem.value = handler.getNextProblem(modeConfiguration)
 
-        _quiz.value = handler.startGame(modeConfig)
         initiateTimer()
 
         _gameState.value = handler.getGameState(null)
@@ -137,13 +127,16 @@ class QuizViewModel(
             return
         }
         // Make sure current problem is not null
-        val problem = lastProblem ?: return
 
-
-        verifyCorrect(userAnswer, problem)
+        verifyCorrect(userAnswer, currentProblem.value!!)
 
 
         _gameState.value = handler.getGameState(elapsedTime.value)
+        if(!isGameFinished){
+            _currentProblem.value = handler.getNextProblem(modeConfig)
+
+        }
+
         _answer.value = progressionManager.resetAnswer()
 
         endOnQuizFinished()
