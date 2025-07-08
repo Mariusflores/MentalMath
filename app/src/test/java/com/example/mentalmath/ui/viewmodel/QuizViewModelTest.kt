@@ -13,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -22,6 +23,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TestTimeSource
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class QuizViewModelTest {
@@ -472,6 +474,24 @@ class QuizViewModelTest {
         assertTrue(
             "Timer should reset on new quiz",
             secondTime < firstTime
+        )
+    }
+
+    @Test
+    fun timeAttack_endsOnCountdown()= runTest{
+        val fakeTimeSource = TestTimeSource()
+        val quizViewModel = QuizViewModel(dispatcher = testDispatcher, timerScope = this, timeSource = fakeTimeSource)
+        val config =
+            config(Difficulty.EASY, Operator.entries.toTypedArray(),  gameMode = GameMode.TimeAttack)
+
+        quizViewModel.startQuiz(config)
+        fakeTimeSource += 60.seconds
+        runCurrent()
+
+
+        assertTrue(
+            "Should set gameFinished true, but was ${quizViewModel.isGameFinished} ",
+            quizViewModel.isGameFinished
         )
     }
     /**

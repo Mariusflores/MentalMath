@@ -23,19 +23,24 @@ import com.example.mentalmath.logic.models.quiz.TimerType
 import com.example.mentalmath.logic.utils.GameStateParser
 import com.example.mentalmath.logic.utils.ScoreCardParser
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
+import kotlin.time.TimeSource
 
 
 class QuizViewModel(
     dispatcher: CoroutineDispatcher = Dispatchers.Main,
+    timerScope: CoroutineScope = CoroutineScope(dispatcher + SupervisorJob()),
+    timeSource: TimeSource = TimeSource.Monotonic,
     private val enableTimer: Boolean = true
 
 ) : ViewModel() {
 
     private val progressionManager: QuizProgressionManager = QuizProgressionManager()
-    private val timerManager: TimerManager = TimerManager(dispatcher)
+    private val timerManager: TimerManager = TimerManager(dispatcher, timerScope, timeSource)
     private lateinit var handler: GameModeHandler
 
 
@@ -52,6 +57,9 @@ class QuizViewModel(
             timerManager.elapsedTime.collect { time ->
                 _elapsedTime.value = time
 
+                if(handler.timerType() == TimerType.COUNTDOWN){
+                    _gameState.value = handler.getGameState(elapsedTime.value)
+                }
             }
         }
     }
@@ -132,7 +140,8 @@ class QuizViewModel(
 
         verifyCorrect(userAnswer, problem)
 
-        _gameState.value = handler.getGameState()
+
+        _gameState.value = handler.getGameState(elapsedTime.value)
         _answer.value = progressionManager.resetAnswer()
 
         endOnQuizFinished()

@@ -39,7 +39,7 @@ fun ScoreScreen(
     val percentageString = " ${viewModel.scoreCardAccuracy}%"
     val elapsedString = when(viewModel.gameMode){
         is GameMode.Casual ->  "Time Elapsed: ${formatTime(viewModel.scoreCardTime)}"
-        is GameMode.TimeAttack ->  "Time Elapsed: ${formatTime(viewModel.scoreCardTime)}"
+        is GameMode.TimeAttack ->  "Time Remaining: ${formatTime(viewModel.scoreCardTime)}"
         else -> ""
     }
 
