@@ -13,6 +13,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import kotlin.concurrent.timer
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -122,11 +123,16 @@ class TimerManagerTest {
 
     @Test
     fun countdown_StartsCountDown()= runTest{
-        val timer = TimerManager(dispatcher = testDispatcher, timerScope = this)
-        val timeLimit = 30.seconds
+        val fakeTimeSource = TestTimeSource()
+
+        val timer = TimerManager(dispatcher = testDispatcher, timerScope = this, timeSource = fakeTimeSource)
+        val timeLimit = 10.seconds
         timer.startCountDown(timeLimit)
 
-        advanceTimeBy(15.seconds)
+        fakeTimeSource += 5.seconds
+        runCurrent()
+        timer.stopTimer()
+
         val remaining = timer.elapsedTime.first()
 
         assertTrue(
