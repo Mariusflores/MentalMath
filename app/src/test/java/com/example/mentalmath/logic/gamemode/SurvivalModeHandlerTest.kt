@@ -22,18 +22,6 @@ class SurvivalModeHandlerTest {
     /**
      * General Test Cases
      * */
-    @Test
-    fun startGame_returnsEmptyList() {
-        val handler = SurvivalModeHandler()
-        val modeConfig = config()
-
-        val quiz = handler.startGame(modeConfig)
-
-        assertTrue(
-            "Should return empty list",
-            quiz.isEmpty()
-        )
-    }
 
     @Test
     fun startGame_shouldResetVariables() {

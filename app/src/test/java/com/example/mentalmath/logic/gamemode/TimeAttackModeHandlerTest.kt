@@ -22,18 +22,6 @@ class TimeAttackModeHandlerTest {
     /**
      * General Test Cases
      * */
-    @Test
-    fun startGame_ShouldReturnQuiz() {
-        val gameHandler = TimeAttackModeHandler()
-
-        val modeConfig = config(Difficulty.EASY)
-
-        val quiz = gameHandler.startGame(modeConfig)
-
-        assertTrue(quiz.isNotEmpty())
-        assertTrue(quiz.all { it.operator in modeConfig.operators })
-
-    }
 
     @Test
     fun startGame_ShouldResetVariables() {
@@ -119,6 +107,23 @@ class TimeAttackModeHandlerTest {
             isFinished
         )
     }
+    @Test
+    fun incrementsIndexCorrectly(){
+        val handler = TimeAttackModeHandler()
+        val modeConfig = config(Difficulty.MEDIUM)
+
+        handler.startGame(modeConfig)
+
+        repeat(3){
+            handler.onAnswerSubmitted(true)
+        }
+        repeat(3){
+            handler.onAnswerSubmitted(false)
+        }
+
+        assertEquals(6, handler.getIndex)
+    }
+
     @Test
     fun startGame_afterEnd_resetsStateCorrectly() {
 
@@ -217,6 +222,19 @@ class TimeAttackModeHandlerTest {
         assertEquals(10, index)
         assertEquals(5, correct)
     }
+    @Test(expected = IndexOutOfBoundsException::class)
+    fun getNextProblem_afterQuizEnds_shouldThrow() {
+        val handler = TimeAttackModeHandler()
+        val config = config(Difficulty.EASY)
+        handler.startGame(config)
+        repeat(5){
+            handler.onAnswerSubmitted(true)
+            handler.onAnswerSubmitted(false)
+        }
+        handler.onAnswerSubmitted(true) // Out of bounds
+        handler.getNextProblem(config)  // Should throw
+    }
+
     /**
      * Mode Unique Test Cases
      * */

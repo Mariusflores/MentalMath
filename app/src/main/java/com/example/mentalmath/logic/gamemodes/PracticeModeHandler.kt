@@ -17,9 +17,8 @@ class PracticeModeHandler: GameModeHandler {
     private var currentStreak = 0
     private var highestStreak = 0
 
-    override fun startGame(modeConfiguration: ModeConfiguration): List<MathProblem> {
+    override fun startGame(modeConfiguration: ModeConfiguration) {
         total = 0; correct = 0; isFinished = false; currentStreak = 0; highestStreak = 0
-        return quizFactory.generateQuizByGameMode(modeConfiguration)
     }
 
     override fun getNextProblem(modeConfiguration: ModeConfiguration): MathProblem {

@@ -8,7 +8,7 @@ import com.example.mentalmath.logic.models.quiz.ProblemMode
 import kotlin.time.Duration
 
 interface GameModeHandler {
-    fun startGame(modeConfiguration: ModeConfiguration): List<MathProblem>
+    fun startGame(modeConfiguration: ModeConfiguration)
     fun getNextProblem(modeConfiguration: ModeConfiguration): MathProblem
     fun timerType(): TimerType
 

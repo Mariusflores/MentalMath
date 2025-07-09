@@ -13,37 +13,24 @@ import kotlin.test.assertEquals
 
 class CasualModeHandlerTest {
 
-    private fun config(length: Int) = ModeConfiguration(Difficulty.EASY, Operator.entries.toTypedArray(), length,
-        GameMode.Casual)
+    private fun config(length: Int) = ModeConfiguration(
+        Difficulty.EASY, Operator.entries.toTypedArray(), length,
+        GameMode.Casual
+    )
 
     /**
      * General Test Cases
      * */
-    @Test
-    fun startGame_ShouldReturnQuiz(){
-        val gameHandler = CasualModeHandler()
-        val length = 10
-        val modeConfig = config(length)
-
-        val quiz = gameHandler.startGame(modeConfig)
-
-        assertEquals(
-            length, quiz.size,
-            "Quiz size ${quiz.size} should match given length: $length"
-        )
-        assertTrue(quiz.all { it.operator in modeConfig.operators })
-
-    }
 
     @Test
-    fun startGame_shouldResetStateVariables(){
+    fun startGame_shouldResetStateVariables() {
         val handler = CasualModeHandler()
         val length = 10
         val modeConfig = config(length)
 
-        val quiz = handler.startGame(modeConfig)
+        handler.startGame(modeConfig)
 
-        repeat(5){
+        repeat(5) {
             handler.onAnswerSubmitted(true)
         }
 
@@ -55,8 +42,6 @@ class CasualModeHandlerTest {
         assertEquals(5, index, "Index: $index should be 5")
         assertEquals(5, correct, "Correct: $correct should be 5")
         assertEquals(length, total, "Total questions should be 10")
-        assertEquals(total, quiz.size)
-
 
         handler.startGame(modeConfig)
         gameState = handler.getGameState()
@@ -68,8 +53,9 @@ class CasualModeHandlerTest {
         assertEquals(0, correct, "Correct: $correct should be reset to 0")
 
     }
+
     @Test
-    fun endGameEarly_setsFinishedTrue(){
+    fun endGameEarly_setsFinishedTrue() {
         val handler = CasualModeHandler()
         val length = 10
         val modeConfig = config(length)
@@ -81,7 +67,8 @@ class CasualModeHandlerTest {
         var isFinished = GameStateParser.getIsFinishedProperty(gameState)
         assertFalse(
             "isFinished should initially be false",
-            isFinished)
+            isFinished
+        )
 
         handler.endGameEarly()
 
@@ -91,18 +78,19 @@ class CasualModeHandlerTest {
 
         assertTrue(
             "isFinished should be set to true",
-            isFinished)
+            isFinished
+        )
     }
 
     @Test
-    fun onFinishingQuiz_shouldSetIsFinished(){
+    fun onFinishingQuiz_shouldSetIsFinished() {
         val handler = CasualModeHandler()
         val length = 10
         val modeConfig = config(length)
 
         handler.startGame(modeConfig)
 
-        repeat(length){
+        repeat(length) {
             handler.onAnswerSubmitted(true)
         }
 
@@ -112,10 +100,30 @@ class CasualModeHandlerTest {
         assertEquals(true, isFinished)
         assertTrue(
             "Should set isFinished = True on finishing quiz",
-            isFinished)
+            isFinished
+        )
     }
+
     @Test
-    fun startGame_afterEnd_resetsStateCorrectly(){
+    fun incrementsIndexCorrectly() {
+        val handler = CasualModeHandler()
+        val length = 10
+        val modeConfig = config(length)
+
+        handler.startGame(modeConfig)
+
+        repeat(3) {
+            handler.onAnswerSubmitted(true)
+        }
+        repeat(3) {
+            handler.onAnswerSubmitted(false)
+        }
+
+        assertEquals(6, handler.getIndex)
+    }
+
+    @Test
+    fun startGame_afterEnd_resetsStateCorrectly() {
 
         val handler = CasualModeHandler()
         val length = 5
@@ -123,7 +131,7 @@ class CasualModeHandlerTest {
 
         handler.startGame(modeConfig)
 
-        repeat(5){
+        repeat(5) {
             handler.onAnswerSubmitted(true)
         }
 
@@ -132,7 +140,8 @@ class CasualModeHandlerTest {
         var isFinished = GameStateParser.getIsFinishedProperty(gameState)
         assertTrue(
             "isFinished should be set to true",
-            isFinished)
+            isFinished
+        )
 
         handler.startGame(modeConfig)
 
@@ -143,18 +152,19 @@ class CasualModeHandlerTest {
 
         assertFalse(
             "isFinished should be reset to false",
-            isFinished)
+            isFinished
+        )
     }
 
     @Test
-    fun onIncorrectAnswer_shouldNotIncrement(){
+    fun onIncorrectAnswer_shouldNotIncrement() {
         val handler = CasualModeHandler()
         val length = 10
         val modeConfig = config(length)
 
         handler.startGame(modeConfig)
 
-        repeat(length){
+        repeat(length) {
             handler.onAnswerSubmitted(false)
         }
 
@@ -165,6 +175,7 @@ class CasualModeHandlerTest {
         assertEquals(0, correct)
         assertEquals(length, index)
     }
+
     @Test
     fun partialProgress_shouldNotSetFinished() {
         val handler = CasualModeHandler()
@@ -190,6 +201,7 @@ class CasualModeHandlerTest {
         assertEquals((length / 2), index)
         assertEquals((length / 2), correct)
     }
+
     @Test
     fun mixCorrectIncorrect_updatesStateCorrectly() {
         val handler = CasualModeHandler()
@@ -212,6 +224,18 @@ class CasualModeHandlerTest {
         assertEquals(length, index)
         assertEquals((length / 2), correct)
     }
+
+    @Test(expected = IndexOutOfBoundsException::class)
+    fun getNextProblem_afterQuizEnds_shouldThrow() {
+        val handler = CasualModeHandler()
+        val config = config(2)
+        handler.startGame(config)
+        handler.onAnswerSubmitted(true)
+        handler.onAnswerSubmitted(false)
+        handler.onAnswerSubmitted(true) // Out of bounds
+        handler.getNextProblem(config)  // Should throw
+    }
+
     /**
      * Mode Unique Test Cases
      * */
@@ -226,7 +250,8 @@ class CasualModeHandlerTest {
 
         assertTrue(
             "Zero-length quiz should be immediately finished",
-            GameStateParser.getIsFinishedProperty(gameState))
+            GameStateParser.getIsFinishedProperty(gameState)
+        )
     }
 
 

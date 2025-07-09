@@ -18,10 +18,11 @@ class TimeAttackModeHandler: GameModeHandler {
     private var isFinished = false
     private var timeLeft = timeLimit()
 
-    override fun startGame(modeConfiguration: ModeConfiguration): List<MathProblem> {
+    val getIndex get() = index
+
+    override fun startGame(modeConfiguration: ModeConfiguration)  {
         index = 0; score = 0; isFinished = false; timeLeft = timeLimit()
         quiz =  quizFactory.generateQuizByGameMode(modeConfiguration)
-        return quiz
     }
     // For Semantics - Not to be used
     override fun getNextProblem(modeConfiguration: ModeConfiguration): MathProblem {
