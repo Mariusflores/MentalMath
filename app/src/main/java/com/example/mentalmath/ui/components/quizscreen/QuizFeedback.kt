@@ -27,7 +27,7 @@ fun QuizFeedBack(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ){
-        if (viewModel.gameMode.ProblemMode == ProblemMode.FINITE){
+        if (viewModel.gameMode.problemMode == ProblemMode.FINITE){
             ProgressBar(viewModel, modifier)
 
             Spacer(modifier = Modifier.Companion.width(16.dp))

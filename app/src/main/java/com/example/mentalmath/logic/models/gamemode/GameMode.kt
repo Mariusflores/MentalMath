@@ -4,7 +4,7 @@ import com.example.mentalmath.logic.models.quiz.ProblemMode
 
 sealed class GameMode(
     val displayName: String,
-    val ProblemMode: ProblemMode
+    val problemMode: ProblemMode
 ) {
 
     object Casual: GameMode("Casual", ProblemMode.FINITE)
