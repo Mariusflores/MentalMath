@@ -9,6 +9,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.example.mentalmath.logic.models.gamemode.GameMode
 import com.example.mentalmath.ui.viewmodel.QuizViewModel
 import kotlin.time.Duration
@@ -27,9 +29,34 @@ fun GameSpecificCorner(
         GameMode.Survival -> {
             SurvivalModeCorner(viewModel)
         }
-        GameMode.Practice -> {}
+        GameMode.Practice -> {
+            PracticeModeCorner(viewModel)
+        }
     }
 }
+
+@Composable
+fun PracticeModeCorner(viewModel: QuizViewModel) {
+    fun getStreakFeedback(streak: Int): String?{
+        return when{
+            streak > 0 && streak % 3 == 0 -> "🔥 You're on fire!"
+            streak > 0 && streak % 2 == 0 -> "💪 Great streak!"
+            else -> null
+        }
+    }
+    val streak = viewModel.practiceStreak
+
+    val feedback = getStreakFeedback(streak)
+
+    if (feedback != null){
+        Text(
+            text = feedback,
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
 
 @Composable
 fun SurvivalModeCorner(

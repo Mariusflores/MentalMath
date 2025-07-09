@@ -9,7 +9,9 @@ object ScoreCardParser {
         return when(val card = scoreCard){
             is ScoreCard.Casual -> card.correct
             is ScoreCard.TimeAttack -> card.correct
-            is ScoreCard.Survival -> card.total - card.lives
+            is ScoreCard.Survival -> {
+                if (card.total - card.lives < 0) 0
+                else card.total - card.lives}
             is ScoreCard.Practice -> card.correct
         }
     }
@@ -51,7 +53,7 @@ object ScoreCardParser {
         }
     }
 
-    fun getStreakProperty(scoreCard: ScoreCard): Int{
+    fun getMaxStreakProperty(scoreCard: ScoreCard): Int{
         return when(val card = scoreCard){
             is ScoreCard.Practice -> card.maxStreak
             else -> error("Game mode does not support lives")
