@@ -1,4 +1,4 @@
-package com.example.mentalmath.ui.components.QuizScreen
+package com.example.mentalmath.ui.components.quizscreen.feedback
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons

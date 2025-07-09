@@ -1,4 +1,4 @@
-package com.example.mentalmath.ui.components.SelectionScreen
+package com.example.mentalmath.ui.components.selectionscreen
 
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api

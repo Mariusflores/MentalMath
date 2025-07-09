@@ -28,10 +28,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mentalmath.R
 import com.example.mentalmath.logic.models.gamemode.GameMode
-import com.example.mentalmath.ui.components.SelectionScreen.DropdownTemplate
-import com.example.mentalmath.ui.components.SelectionScreen.GameModeCard
-import com.example.mentalmath.ui.components.SelectionScreen.OperatorCheckBox
-import com.example.mentalmath.ui.components.SelectionScreen.QuizLengthSlider
+import com.example.mentalmath.ui.components.selectionscreen.DropdownTemplate
+import com.example.mentalmath.ui.components.selectionscreen.GameModeCard
+import com.example.mentalmath.ui.components.selectionscreen.OperatorCheckBox
+import com.example.mentalmath.ui.components.selectionscreen.QuizLengthSlider
 import com.example.mentalmath.ui.viewmodel.QuizViewModel
 import com.example.mentalmath.ui.viewmodel.SettingsViewModel
 

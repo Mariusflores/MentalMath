@@ -1,26 +1,21 @@
 package com.example.mentalmath.ui.screens
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.mentalmath.ui.components.QuizScreen.ButtonRow
-import com.example.mentalmath.ui.components.QuizScreen.FeedbackDisplay
-import com.example.mentalmath.ui.components.QuizScreen.GameSpecificCorner
-import com.example.mentalmath.ui.components.QuizScreen.InputBox
-import com.example.mentalmath.ui.components.QuizScreen.ProblemDisplay
+import com.example.mentalmath.ui.components.quizscreen.ButtonRow
+import com.example.mentalmath.ui.components.quizscreen.FeedbackDisplay
+import com.example.mentalmath.ui.components.quizscreen.InputBox
+import com.example.mentalmath.ui.components.quizscreen.ProblemDisplay
+import com.example.mentalmath.ui.components.quizscreen.QuizFeedBack
 import com.example.mentalmath.ui.viewmodel.QuizViewModel
 
 
@@ -33,12 +28,7 @@ fun QuizScreen(
 
 ) {
 
-    val progress = (viewModel.gameStateIndex + 1).toFloat() / (viewModel.gameStateTotal + 1)
-    val color = when (viewModel.lastAnswerCorrect) {
 
-        true -> Color.Green
-        false -> Color.Red
-    }
 
 
     LaunchedEffect(viewModel.isGameFinished) {
@@ -52,20 +42,7 @@ fun QuizScreen(
             .padding(24.dp)
             .fillMaxSize()
     ) {
-        Row {
-            LinearProgressIndicator(
-
-                progress = { progress },
-                modifier = modifier.fillMaxWidth(0.7f),
-                color = color
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            GameSpecificCorner(viewModel)
-
-
-        }
+        QuizFeedBack(viewModel)
 
 
         ProblemDisplay(requireNotNull(viewModel.currentProblem.value))
