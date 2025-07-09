@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -16,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,9 +27,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mentalmath.R
-import com.example.mentalmath.logic.models.QuizConfiguration
-import com.example.mentalmath.ui.components.DropdownTemplate
-import com.example.mentalmath.ui.components.OperatorCheckBox
+import com.example.mentalmath.logic.models.gamemode.GameMode
+import com.example.mentalmath.ui.components.selectionscreen.DropdownTemplate
+import com.example.mentalmath.ui.components.selectionscreen.GameModeCard
+import com.example.mentalmath.ui.components.selectionscreen.OperatorCheckBox
+import com.example.mentalmath.ui.components.selectionscreen.QuizLengthSlider
 import com.example.mentalmath.ui.viewmodel.QuizViewModel
 import com.example.mentalmath.ui.viewmodel.SettingsViewModel
 
@@ -45,23 +47,24 @@ fun QuizSelectorScreen(
     var selectedDifficulty by remember { mutableStateOf(settingsViewModel.difficulty.value) }
     var quizLength by remember { mutableStateOf(settingsViewModel.quizLength.value) }
     val operatorList = settingsViewModel.operators.value
+    var selectedGameMode: GameMode by remember { mutableStateOf(GameMode.Casual) }
+    var sliderPosition by remember { mutableFloatStateOf(10f) }
 
 
     val difficultyLabel = stringResource(R.string.difficulty_label)
-    val lengthLabel = stringResource(R.string.length_label)
 
+    val gameModeList = listOf<GameMode>(
+        GameMode.Casual,
+        GameMode.TimeAttack,
+        GameMode.Survival,
+        GameMode.Practice
+    )
     val difficultyList = listOf(
         stringResource(R.string.difficulty_easy),
         stringResource(R.string.difficulty_medium),
         stringResource(R.string.difficulty_hard),
 
         )
-    val lengthsList = listOf(
-        stringResource(R.string.mode_5),
-        stringResource(R.string.mode_10),
-        stringResource(R.string.mode_15),
-        stringResource(R.string.mode_20)
-    )
     val operatorResourceList = listOf(
         stringResource(R.string.operator_add),
         stringResource(R.string.operator_sub),
@@ -77,23 +80,41 @@ fun QuizSelectorScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            items(gameModeList) { gameMode ->
+                GameModeCard(
+                    selectedGameMode = selectedGameMode,
+                    gameMode = gameMode,
+                    onSelect = {selectedGameMode = it}
+                    )
+            }
+        }
+        Spacer(modifier = modifier.height(16.dp))
+
+        Spacer(modifier = modifier.height(16.dp))
 
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
         ) {
             DropdownTemplate(
                 selectedDifficulty, difficultyLabel, difficultyList,
                 onSelected = { selectedDifficulty = it },
                 modifier = Modifier.weight(0.6f)
             )
-            Spacer(modifier = modifier.width(10.dp))
-            DropdownTemplate(
-                quizLength, lengthLabel, lengthsList,
-                onSelected = { quizLength = it },
-                modifier = Modifier.weight(0.4f)
+        }
+        Spacer(modifier = modifier.height(16.dp))
 
+        if(selectedGameMode == GameMode.Casual){
+            QuizLengthSlider(
+                sliderPosition,
+                onSlide = {sliderPosition = it}
             )
         }
+
         Text(
             text = OPERATOR_LABEL,
             fontSize = 15.sp,
@@ -122,11 +143,7 @@ fun QuizSelectorScreen(
                 settingsViewModel.setDifficulty(selectedDifficulty)
                 settingsViewModel.setQuizLength(quizLength)
                 quizViewModel.startQuiz(
-                    QuizConfiguration(
-                        settingsViewModel.difficulty.value,
-                        settingsViewModel.quizLength.value,
-                        settingsViewModel.operators.value
-                    )
+                    settingsViewModel.getModeConfiguration(selectedGameMode)
                 )
 
                 navController.navigate("quiz")

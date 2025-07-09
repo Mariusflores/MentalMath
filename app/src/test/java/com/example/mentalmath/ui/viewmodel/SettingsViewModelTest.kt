@@ -18,7 +18,7 @@ class SettingsViewModelTest {
     @Test
     fun setQuizLength_updateState(){
         val settingsViewModel = SettingsViewModel()
-        val quizLength = "20"
+        val quizLength = 10
 
         settingsViewModel.setQuizLength(quizLength)
 
@@ -40,10 +40,6 @@ class SettingsViewModelTest {
         settingsViewModel.toggleOperator(operator)
 
         assertTrue(operatorList.all { it in settingsViewModel.operators.value })
-
-
-
-
-
     }
+
 }

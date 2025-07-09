@@ -1,4 +1,4 @@
-package com.example.mentalmath.ui.components
+package com.example.mentalmath.ui.components.quizscreen
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

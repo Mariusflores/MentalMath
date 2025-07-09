@@ -1,8 +1,8 @@
 package com.example.mentalmath.logic.generators
 
-import com.example.mentalmath.logic.models.Difficulty
-import com.example.mentalmath.logic.models.MathProblem
-import com.example.mentalmath.logic.models.Operator
+import com.example.mentalmath.logic.models.core.Difficulty
+import com.example.mentalmath.logic.models.core.MathProblem
+import com.example.mentalmath.logic.models.core.Operator
 
 object MathQuizGenerator {
 

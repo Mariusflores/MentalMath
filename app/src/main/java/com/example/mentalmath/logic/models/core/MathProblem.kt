@@ -1,8 +1,8 @@
-package com.example.mentalmath.logic.models
+package com.example.mentalmath.logic.models.core
 
 data class MathProblem(
-    val a: Int,
-    val b: Int,
+    val operandA: Int,
+    val operandB: Int,
     val operator: Operator,
     val questionText: String,
     val correctAnswer: Int

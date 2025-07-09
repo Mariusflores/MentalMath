@@ -1,4 +1,4 @@
-package com.example.mentalmath.logic.models
+package com.example.mentalmath.logic.models.core
 
 enum class Difficulty {
     EASY, MEDIUM, HARD;
@@ -13,7 +13,7 @@ enum class Difficulty {
 
     object DifficultyConverter{
         fun toDifficulty(difficulty: String): Difficulty{
-            return when(difficulty){
+            return when(difficulty.lowercase()){
                 "easy" -> EASY
                 "medium" -> MEDIUM
                 "hard" -> HARD

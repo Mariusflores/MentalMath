@@ -1,4 +1,4 @@
-package com.example.mentalmath.ui.components
+package com.example.mentalmath.ui.components.selectionscreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
