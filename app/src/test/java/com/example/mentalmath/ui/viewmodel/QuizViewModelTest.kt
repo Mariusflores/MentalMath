@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -448,19 +449,19 @@ class QuizViewModelTest {
 
     @Test
     fun startQuiz_shouldResetTimer_newQuiz() = runTest {
-        val quizViewModel = getQuizViewModel(true)
+        val quizViewModel = QuizViewModel(dispatcher = testDispatcher, timerScope = this, enableTimer = true)
 
         val config =
             config(Difficulty.EASY, Operator.entries.toTypedArray(), 10, gameMode = GameMode.Casual)
 
         quizViewModel.startQuiz(config)
-        delay(100)
+        advanceTimeBy(200)
         quizViewModel.onEndClick()
 
         val firstTime = quizViewModel.scoreCardTime
 
         quizViewModel.startQuiz(config)
-        delay(50)
+        advanceTimeBy(100)
         quizViewModel.onEndClick()
 
         val secondTime = quizViewModel.scoreCardTime
