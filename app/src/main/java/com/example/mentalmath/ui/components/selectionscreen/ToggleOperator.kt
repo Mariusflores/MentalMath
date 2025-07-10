@@ -1,55 +1,70 @@
 package com.example.mentalmath.ui.components.selectionscreen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mentalmath.ui.viewmodel.SettingsViewModel
 
 @Composable
-fun OperatorCheckBox(
+fun ToggleOperator(
     symbol: String,
     isChecked: Boolean,
     settingsViewModel: SettingsViewModel,
 ) {
 
+    fun getOperatorLabel(): String{
+        return when (symbol){
+            "+" -> "Addition"
+            "-" -> "Subtraction"
+            "×" -> "Multiplication"
+            "÷" -> "Division"
+            else -> ""
+        }
+    }
+
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.Start,
         modifier = Modifier
             .padding(10.dp)
-            .border(width = 0.5.dp, color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp))
             .background(color = MaterialTheme.colorScheme.background)
             .fillMaxWidth()
 
     ) {
-        Checkbox(
+        Switch(
+            modifier = Modifier.align(Alignment.CenterVertically)
+                .padding(end = 5.dp)
+                .scale(0.75f),
             checked = isChecked,
             onCheckedChange = { settingsViewModel.toggleOperator(symbol) },
-            enabled = true,
-            modifier = Modifier.align(Alignment.CenterVertically)
+            thumbContent = if (isChecked){
+                {
+                    Text(symbol)
+                }
+            }else null
 
         )
         Text(
             modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(end = 5.dp),
-            text = symbol,
-            fontSize = 28.sp,
+                .align(Alignment.CenterVertically),
+            text = getOperatorLabel(),
+            fontSize = 14.sp,
             fontWeight = FontWeight.Bold
 
         )
+
+
 
     }
 }

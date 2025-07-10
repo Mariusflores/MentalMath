@@ -22,6 +22,7 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TestTimeSource
 
@@ -405,7 +406,8 @@ class QuizViewModelTest {
 
     @Test
     fun timerShouldDecrease_countdownMode() = runTest {
-        val quizViewModel = getQuizViewModel(true)
+        val fakeTimeSource = TestTimeSource()
+        val quizViewModel = QuizViewModel(dispatcher = testDispatcher, timerScope = this, enableTimer = true, timeSource = fakeTimeSource)
 
         val operatorArray = Operator.entries.toTypedArray()
         val difficulty = Difficulty.EASY
@@ -415,7 +417,7 @@ class QuizViewModelTest {
 
         quizViewModel.startQuiz(config)
 
-        delay(50)
+        fakeTimeSource += 50.milliseconds
 
         quizViewModel.onEndClick()
 
@@ -456,12 +458,14 @@ class QuizViewModelTest {
 
         quizViewModel.startQuiz(config)
         advanceTimeBy(200)
+        runCurrent()
         quizViewModel.onEndClick()
 
         val firstTime = quizViewModel.scoreCardTime
 
         quizViewModel.startQuiz(config)
         advanceTimeBy(100)
+        runCurrent()
         quizViewModel.onEndClick()
 
         val secondTime = quizViewModel.scoreCardTime

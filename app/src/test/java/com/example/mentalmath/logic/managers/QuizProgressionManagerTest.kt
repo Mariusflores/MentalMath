@@ -103,7 +103,7 @@ class QuizProgressionManagerTest {
 
         assertEquals(correct, ScoreCardParser.getCorrectProperty(scoreCard))
         assertEquals(total, ScoreCardParser.getTotalProperty(scoreCard))
-        assertEquals(maxStreak, ScoreCardParser.getStreakProperty(scoreCard))
+        assertEquals(maxStreak, ScoreCardParser.getMaxStreakProperty(scoreCard))
         assertEquals(accuracy, ScoreCardParser.getAccuracyProperty(scoreCard))
 
     }

@@ -90,6 +90,7 @@ class QuizViewModel(
 
     val survivalLives: Int get() = GameStateParser.getLivesProperty(gameState)
     val survivalMistakes: Int get() = GameStateParser.getMistakesProperty(gameState)
+    val practiceStreak: Int get() = GameStateParser.getStreakProperty(gameState)
 
 
     // No need for reactivity
@@ -97,6 +98,7 @@ class QuizViewModel(
     val scoreCardTotal: Int get() = ScoreCardParser.getTotalProperty(_scoreCard.value)
     val scoreCardTime: Duration get() = ScoreCardParser.getTimeElapsedOrRemaining(_scoreCard.value)
     val scoreCardAccuracy: Double get() = ScoreCardParser.getAccuracyProperty(_scoreCard.value)
+    val scoreCardHighestStreak: Int get() = ScoreCardParser.getMaxStreakProperty(_scoreCard.value)
 
     val gameState get() = requireNotNull(_gameState.value)
     val gameMode get() = modeConfig.gameMode
