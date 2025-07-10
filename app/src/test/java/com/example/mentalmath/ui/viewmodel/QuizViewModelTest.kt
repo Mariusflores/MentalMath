@@ -458,12 +458,14 @@ class QuizViewModelTest {
 
         quizViewModel.startQuiz(config)
         advanceTimeBy(200)
+        runCurrent()
         quizViewModel.onEndClick()
 
         val firstTime = quizViewModel.scoreCardTime
 
         quizViewModel.startQuiz(config)
         advanceTimeBy(100)
+        runCurrent()
         quizViewModel.onEndClick()
 
         val secondTime = quizViewModel.scoreCardTime
