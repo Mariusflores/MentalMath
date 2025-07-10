@@ -2,17 +2,22 @@ package com.example.mentalmath.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
+import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -37,6 +42,7 @@ import com.example.mentalmath.ui.viewmodel.SettingsViewModel
 
 private const val OPERATOR_LABEL = "Choose operators"
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizSelectorScreen(
     navController: NavController,
@@ -45,20 +51,24 @@ fun QuizSelectorScreen(
     modifier: Modifier = Modifier
 ) {
     var selectedDifficulty by remember { mutableStateOf(settingsViewModel.difficulty.value) }
+
     var quizLength by remember { mutableStateOf(settingsViewModel.quizLength.value) }
     val operatorList = settingsViewModel.operators.value
-    var selectedGameMode: GameMode by remember { mutableStateOf(GameMode.Casual) }
     var sliderPosition by remember { mutableFloatStateOf(10f) }
 
 
     val difficultyLabel = stringResource(R.string.difficulty_label)
 
-    val gameModeList = listOf<GameMode>(
+    val gameModeList = remember {listOf<GameMode>(
         GameMode.Casual,
         GameMode.TimeAttack,
         GameMode.Survival,
         GameMode.Practice
-    )
+    )}
+
+    var selectedGameMode: GameMode by remember { mutableStateOf(gameModeList.first()) }
+
+
     val difficultyList = listOf(
         stringResource(R.string.difficulty_easy),
         stringResource(R.string.difficulty_medium),
@@ -80,18 +90,37 @@ fun QuizSelectorScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        HorizontalMultiBrowseCarousel(
+            state = rememberCarouselState { gameModeList.count() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(top = 16.dp, bottom = 16.dp),
+            preferredItemWidth = 186.dp,
+            itemSpacing = 8.dp,
+            contentPadding = PaddingValues(horizontal = 16.dp)
+        ) {
+            i ->
+            val gameMode = gameModeList[i]
+            GameModeCard(
+                selectedGameMode = selectedGameMode,
+                gameMode = gameMode,
+                onSelect = {selectedGameMode = it}
+            )
+        }
+
+        /*
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxWidth()
         ) {
             items(gameModeList) { gameMode ->
-                GameModeCard(
-                    selectedGameMode = selectedGameMode,
-                    gameMode = gameMode,
-                    onSelect = {selectedGameMode = it}
-                    )
+
             }
         }
+
+         */
         Spacer(modifier = modifier.height(16.dp))
 
         Spacer(modifier = modifier.height(16.dp))
