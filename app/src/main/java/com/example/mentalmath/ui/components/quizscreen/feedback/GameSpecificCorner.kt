@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -71,7 +72,8 @@ fun SurvivalModeCorner(
         (1..getLives()).forEach { i ->
             Icon(
                 imageVector = Icons.Filled.Favorite,
-                contentDescription = "Favorite"
+                contentDescription = "Favorite",
+                tint = Color.Red
             )
         }
     }
